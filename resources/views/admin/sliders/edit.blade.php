@@ -47,7 +47,7 @@
                             <div class="image-upload-container">
                                 <input type="file" class="form-control @error('image') is-invalid @enderror" 
                                        id="image" name="image" accept="image/*">
-                                <div class="form-text">
+                                <div class="form-text text-white">
                                     <i class="fas fa-info-circle me-1"></i>
                                     Leave empty to keep current image. Recommended size: 1920x1080px (16:9 ratio). 
                                     Maximum file size: 5MB. Supported formats: JPEG, PNG, JPG, GIF.
@@ -130,7 +130,7 @@
                                             @error('cta_link')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
-                                            <div class="form-text">
+                                            <div class="form-text text-white">
                                                 Use relative URLs (/contact) for internal links or full URLs (https://example.com) for external links.
                                             </div>
                                         </div>
@@ -157,7 +157,7 @@
                             @error('order_position')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <div class="form-text">Lower numbers appear first.</div>
+                            <div class="form-text text-white">Lower numbers appear first.</div>
                         </div>
                         
                         <!-- Status -->
@@ -172,7 +172,7 @@
                             @error('is_active')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <div class="form-text">Only active sliders will be displayed on the home page.</div>
+                            <div class="form-text text-white">Only active sliders will be displayed on the home page.</div>
                         </div>
                     </div>
                     

@@ -12,7 +12,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-warning">{{ $totalBookings }}</h5>
-                        <p class="card-text">Total Bookings</p>
+                        <p class="card-text text-white">Total Bookings</p>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-calendar-check fa-2x text-warning"></i>
@@ -28,7 +28,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-success">{{ $pendingBookings }}</h5>
-                        <p class="card-text">Pending Bookings</p>
+                        <p class="card-text text-white">Pending Bookings</p>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-clock fa-2x text-success"></i>
@@ -44,7 +44,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-info">{{ $totalCelebrities }}</h5>
-                        <p class="card-text">Total Celebrities</p>
+                        <p class="card-text text-white">Total Celebrities</p>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-users fa-2x text-info"></i>
@@ -60,7 +60,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-danger">{{ $unreadMessages }}</h5>
-                        <p class="card-text">Unread Messages</p>
+                        <p class="card-text text-white">Unread Messages</p>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-envelope fa-2x text-danger"></i>
@@ -129,7 +129,7 @@
                         </a>
                     </div>
                 @else
-                    <div class="text-center text-muted py-4">
+                    <div class="text-center text-white py-4">
                         <i class="fas fa-calendar-times fa-3x mb-3"></i>
                         <p>No bookings yet</p>
                     </div>
@@ -181,9 +181,9 @@
                 @if($recentMessages->count() > 0)
                     @foreach($recentMessages as $message)
                         <div class="border-bottom border-secondary pb-2 mb-2">
-                            <small class="text-muted">{{ $message->created_at->diffForHumans() }}</small>
+                            <small class="text-white">{{ $message->created_at->diffForHumans() }}</small>
                             <p class="mb-1"><strong>{{ $message->name }}</strong></p>
-                            <p class="small text-muted mb-0">{{ Str::limit($message->message, 50) }}</p>
+                            <p class="small text-white mb-0">{{ Str::limit($message->message, 50) }}</p>
                         </div>
                     @endforeach
                     <div class="text-center mt-3">
@@ -192,7 +192,7 @@
                         </a>
                     </div>
                 @else
-                    <div class="text-center text-muted py-3">
+                    <div class="text-center text-white py-3">
                         <i class="fas fa-inbox fa-2x mb-2"></i>
                         <p class="small">No messages yet</p>
                     </div>

@@ -149,9 +149,9 @@
                                                name="service_types[]" 
                                                value="{{ $serviceType->id }}" 
                                                {{ in_array($serviceType->id, old('service_types', [])) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="service_{{ $serviceType->id }}">
+                                        <label class="form-check-label text-white" for="service_{{ $serviceType->id }}">
                                             {{ $serviceType->name }}
-                                            <small class="text-muted">({{ $serviceType->description }})</small>
+                                            <small class="text-white">({{ $serviceType->description }})</small>
                                         </label>
                                     </div>
                                 </div>
@@ -189,19 +189,19 @@
                 <ul class="list-unstyled">
                     <li class="mb-2">
                         <i class="fas fa-camera text-warning me-2"></i>
-                        <small>Use high-quality, professional photos for better engagement</small>
+                        <small class="text-white">Use high-quality, professional photos for better engagement</small>
                     </li>
                     <li class="mb-2">
                         <i class="fas fa-dollar-sign text-success me-2"></i>
-                        <small>Set competitive hourly rates based on market standards</small>
+                        <small class="text-white">Set competitive hourly rates based on market standards</small>
                     </li>
                     <li class="mb-2">
                         <i class="fas fa-list text-info me-2"></i>
-                        <small>Select multiple services to increase booking opportunities</small>
+                        <small class="text-white">Select multiple services to increase booking opportunities</small>
                     </li>
                     <li class="mb-2">
                         <i class="fas fa-pen text-primary me-2"></i>
-                        <small>Write engaging biographies to attract more customers</small>
+                        <small class="text-white">Write engaging biographies to attract more customers</small>
                     </li>
                 </ul>
             </div>

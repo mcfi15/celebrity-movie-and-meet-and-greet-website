@@ -156,7 +156,7 @@
                                                name="service_types[]" 
                                                value="{{ $serviceType->id }}" 
                                                {{ in_array($serviceType->id, old('service_types', $celebrity->services->pluck('service_type_id')->toArray())) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="service_{{ $serviceType->id }}">
+                                        <label class="form-check-label text-white" for="service_{{ $serviceType->id }}">
                                             {{ $serviceType->name }}
                                             <small class="text-muted">({{ $serviceType->description }})</small>
                                         </label>

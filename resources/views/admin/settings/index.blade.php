@@ -112,7 +112,7 @@
                                id="site_logo" 
                                name="site_logo" 
                                accept="image/*">
-                        <div class="form-text">Upload a new logo to replace the current one. Recommended size: 200x50px</div>
+                        <div class="form-text text-white">Upload a new logo to replace the current one. Recommended size: 200x50px</div>
                         @error('site_logo')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -137,9 +137,9 @@
                                    name="payment_enabled" 
                                    value="1" 
                                    {{ old('payment_enabled', $settings['payment_enabled'] ?? false) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="payment_enabled">
+                            <label class="form-check-label text-white" for="payment_enabled">
                                 <strong>Enable Payments</strong>
-                                <br><small class="text-muted">Allow customers to make payments when booking</small>
+                                <br><small class="text-white">Allow customers to make payments when booking</small>
                             </label>
                         </div>
                     </div>
@@ -153,7 +153,7 @@
                                        name="stripe_enabled" 
                                        value="1" 
                                        {{ old('stripe_enabled', $settings['stripe_enabled'] ?? false) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="stripe_enabled">
+                                <label class="form-check-label text-white" for="stripe_enabled">
                                     Credit Cards (Stripe)
                                 </label>
                             </div>
@@ -166,7 +166,7 @@
                                        name="crypto_enabled" 
                                        value="1" 
                                        {{ old('crypto_enabled', $settings['crypto_enabled'] ?? false) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="crypto_enabled">
+                                <label class="form-check-label text-white" for="crypto_enabled">
                                     Cryptocurrency
                                 </label>
                             </div>
@@ -179,7 +179,7 @@
                                        name="bank_transfer_enabled" 
                                        value="1" 
                                        {{ old('bank_transfer_enabled', $settings['bank_transfer_enabled'] ?? false) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="bank_transfer_enabled">
+                                <label class="form-check-label text-white" for="bank_transfer_enabled">
                                     Bank Transfer
                                 </label>
                             </div>
@@ -195,12 +195,12 @@
                 <div class="card">
                     <div class="card-header">
                         <h6 class="mb-0">
-                            <i class="fas fa-image me-2"></i>
+                            <i class="fas fa-image me-2 text-white"></i>
                             Current Logo
                         </h6>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ asset('storage/' . $settings['site_logo']) }}" 
+                        <img src="{{ asset( $settings['site_logo']) }}" 
                              alt="Site Logo" 
                              class="img-fluid" 
                              style="max-height: 100px;">
@@ -211,7 +211,7 @@
             <!-- Quick Stats -->
             <div class="card {{ isset($settings['site_logo']) && $settings['site_logo'] ? 'mt-4' : '' }}">
                 <div class="card-header">
-                    <h6 class="mb-0">
+                    <h6 class="mb-0 ">
                         <i class="fas fa-chart-bar me-2"></i>
                         Site Statistics
                     </h6>
@@ -220,19 +220,19 @@
                     <div class="row text-center">
                         <div class="col-6 mb-3">
                             <h4 class="text-warning">{{ $stats['celebrities'] ?? 0 }}</h4>
-                            <small class="text-muted">Celebrities</small>
+                            <small class="text-white">Celebrities</small>
                         </div>
                         <div class="col-6 mb-3">
                             <h4 class="text-info">{{ $stats['bookings'] ?? 0 }}</h4>
-                            <small class="text-muted">Bookings</small>
+                            <small class="text-white">Bookings</small>
                         </div>
                         <div class="col-6">
                             <h4 class="text-success">{{ $stats['services'] ?? 0 }}</h4>
-                            <small class="text-muted">Services</small>
+                            <small class="text-white">Services</small>
                         </div>
                         <div class="col-6">
                             <h4 class="text-primary">{{ $stats['messages'] ?? 0 }}</h4>
-                            <small class="text-muted">Messages</small>
+                            <small class="text-white">Messages</small>
                         </div>
                     </div>
                 </div>

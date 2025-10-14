@@ -41,7 +41,7 @@
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-md-8">
-                        <h3 class="mb-2">{{ $serviceType->name }}</h3>
+                        <h3 class="mb-2 text-white">{{ $serviceType->name }}</h3>
                         @if($serviceType->is_active)
                             <span class="badge bg-success fs-6">Active</span>
                         @else
@@ -54,7 +54,7 @@
                 </div>
                 
                 <div class="mb-4">
-                    <h6>Description:</h6>
+                    <h6 class="text-white">Description:</h6>
                     <p class="text-muted">{{ $serviceType->description }}</p>
                 </div>
                 

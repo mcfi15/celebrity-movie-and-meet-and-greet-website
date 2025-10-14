@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\SiteSetting;
-use App\Models\Celebrity;
 use App\Models\Booking;
+use App\Models\Celebrity;
 use App\Models\ServiceType;
-use App\Models\ContactMessage;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use App\Models\SiteSetting;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\ContactMessage;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 
 class SiteSettingController extends Controller
 {
@@ -82,14 +83,28 @@ class SiteSettingController extends Controller
             'bank_transfer_enabled' => $request->has('bank_transfer_enabled'),
         ];
 
-        // Handle logo upload
-        if ($request->hasFile('site_logo')) {
-            if ($siteSetting->site_logo) {
-                Storage::disk('public')->delete($siteSetting->site_logo);
+        if($request->hasFile('site_logo')){
+ 
+            $path = $siteSetting->site_logo;
+            if(File::exists($path)){
+                File::delete($path);
             }
-            $logoPath = $this->uploadImage($request->file('site_logo'), 'settings', 300, 100);
-            $updateData['site_logo'] = $logoPath;
+            $file = $request->file('site_logo');
+            $ext = $file->getClientOriginalExtension();
+            $filename = time().'.'.$ext;
+
+            $file->move('uploads/settings/',$filename);
+            $updateData['site_logo'] = "uploads/settings/$filename";
         }
+
+        // // Handle logo upload
+        // if ($request->hasFile('site_logo')) {
+        //     if ($siteSetting->site_logo) {
+        //         Storage::disk('public')->delete($siteSetting->site_logo);
+        //     }
+        //     $logoPath = $this->uploadImage($request->file('site_logo'), 'settings', 300, 100);
+        //     $updateData['site_logo'] = $logoPath;
+        // }
 
         // Update the settings
         $siteSetting->update($updateData);

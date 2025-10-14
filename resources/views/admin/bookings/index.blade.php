@@ -61,7 +61,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-warning">{{ $totalBookings }}</h5>
-                        <p class="card-text">Total Bookings</p>
+                        <p class="card-text text-white">Total Bookings</p>
                     </div>
                     <i class="fas fa-calendar-check fa-2x text-warning"></i>
                 </div>
@@ -74,7 +74,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-success">{{ $pendingBookings }}</h5>
-                        <p class="card-text">Pending</p>
+                        <p class="card-text text-white">Pending</p>
                     </div>
                     <i class="fas fa-clock fa-2x text-success"></i>
                 </div>
@@ -87,7 +87,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-info">{{ $approvedBookings }}</h5>
-                        <p class="card-text">Approved</p>
+                        <p class="card-text text-white">Approved</p>
                     </div>
                     <i class="fas fa-check-circle fa-2x text-info"></i>
                 </div>
@@ -100,7 +100,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-danger">{{ $rejectedBookings }}</h5>
-                        <p class="card-text">Rejected</p>
+                        <p class="card-text text-white">Rejected</p>
                     </div>
                     <i class="fas fa-times-circle fa-2x text-danger"></i>
                 </div>

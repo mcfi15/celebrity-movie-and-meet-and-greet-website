@@ -83,32 +83,32 @@
             </div>
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-4"><strong>ID:</strong></div>
-                    <div class="col-8">#{{ $slider->id }}</div>
+                    <div class="col-4 text-white"><strong>ID:</strong></div>
+                    <div class="col-8 text-white">#{{ $slider->id }}</div>
                 </div>
                 
                 <div class="row mb-3">
-                    <div class="col-4"><strong>Title:</strong></div>
-                    <div class="col-8">{{ $slider->title }}</div>
+                    <div class="col-4 text-white"><strong>Title:</strong></div>
+                    <div class="col-8 text-white">{{ $slider->title }}</div>
                 </div>
                 
                 @if($slider->subtitle)
                     <div class="row mb-3">
-                        <div class="col-4"><strong>Subtitle:</strong></div>
-                        <div class="col-8">{{ $slider->subtitle }}</div>
+                        <div class="col-4 text-white"><strong>Subtitle:</strong></div>
+                        <div class="col-8 text-white">{{ $slider->subtitle }}</div>
                     </div>
                 @endif
                 
                 @if($slider->description)
                     <div class="row mb-3">
-                        <div class="col-4"><strong>Description:</strong></div>
-                        <div class="col-8">{{ $slider->description }}</div>
+                        <div class="col-4 text-white"><strong>Description:</strong></div>
+                        <div class="col-8 text-white">{{ $slider->description }}</div>
                     </div>
                 @endif
                 
                 <div class="row mb-3">
-                    <div class="col-4"><strong>Status:</strong></div>
-                    <div class="col-8">
+                    <div class="col-4 text-white"><strong>Status:</strong></div>
+                    <div class="col-8 text-white">
                         <span class="badge {{ $slider->is_active ? 'bg-success' : 'bg-secondary' }}">
                             {{ $slider->is_active ? 'Active' : 'Inactive' }}
                         </span>
@@ -116,18 +116,18 @@
                 </div>
                 
                 <div class="row mb-3">
-                    <div class="col-4"><strong>Order:</strong></div>
-                    <div class="col-8">#{{ $slider->order_position }}</div>
+                    <div class="col-4 text-white"><strong>Order:</strong></div>
+                    <div class="col-8 text-white">#{{ $slider->order_position }}</div>
                 </div>
                 
                 <div class="row mb-3">
-                    <div class="col-4"><strong>Created:</strong></div>
-                    <div class="col-8">{{ $slider->created_at->format('M d, Y H:i') }}</div>
+                    <div class="col-4 text-white"><strong>Created:</strong></div>
+                    <div class="col-8 text-white">{{ $slider->created_at->format('M d, Y H:i') }}</div>
                 </div>
                 
                 <div class="row mb-3">
-                    <div class="col-4"><strong>Updated:</strong></div>
-                    <div class="col-8">{{ $slider->updated_at->format('M d, Y H:i') }}</div>
+                    <div class="col-4 text-white"><strong>Updated:</strong></div>
+                    <div class="col-8 text-white">{{ $slider->updated_at->format('M d, Y H:i') }}</div>
                 </div>
             </div>
         </div>
@@ -144,15 +144,15 @@
                 <div class="card-body">
                     @if($slider->cta_text)
                         <div class="row mb-3">
-                            <div class="col-4"><strong>Button Text:</strong></div>
-                            <div class="col-8">{{ $slider->cta_text }}</div>
+                            <div class="col-4 text-white"><strong>Button Text:</strong></div>
+                            <div class="col-8 text-white">{{ $slider->cta_text }}</div>
                         </div>
                     @endif
                     
                     @if($slider->cta_link)
                         <div class="row mb-3">
-                            <div class="col-4"><strong>Link:</strong></div>
-                            <div class="col-8">
+                            <div class="col-4 text-white"><strong>Link:</strong></div>
+                            <div class="col-8 text-white">
                                 <a href="{{ $slider->formatted_cta_link }}" target="_blank" class="text-break">
                                     {{ $slider->cta_link }}
                                     <i class="fas fa-external-link-alt ms-1"></i>

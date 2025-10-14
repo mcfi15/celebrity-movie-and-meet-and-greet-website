@@ -34,7 +34,7 @@
         <div class="card">
             <div class="card-body text-center">
                 @if($celebrity->image)
-                    <img src="{{ asset('storage/' . $celebrity->image) }}" 
+                    <img src="{{ asset($celebrity->image) }}" 
                          alt="{{ $celebrity->name }}" 
                          class="rounded-circle mb-3" 
                          width="150" 
@@ -43,12 +43,12 @@
                 @else
                     <div class="bg-secondary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" 
                          style="width: 150px; height: 150px;">
-                        <i class="fas fa-user fa-3x text-muted"></i>
+                        <i class="fas fa-user fa-3x text-white"></i>
                     </div>
                 @endif
                 
-                <h4 class="mb-1">{{ $celebrity->name }}</h4>
-                <p class="text-muted mb-3">{{ $celebrity->profession }}</p>
+                <h4 class="mb-1 text-white">{{ $celebrity->name }}</h4>
+                <p class="text-white mb-3">{{ $celebrity->profession }}</p>
                 
                 <div class="mb-3">
                     @if($celebrity->is_available)
@@ -67,11 +67,11 @@
                 <div class="row text-center">
                     <div class="col-6">
                         <h5 class="text-warning">${{ number_format($celebrity->hourly_rate, 2) }}</h5>
-                        <small class="text-muted">Hourly Rate</small>
+                        <small class="text-white">Hourly Rate</small>
                     </div>
                     <div class="col-6">
                         <h5 class="text-info">{{ $celebrity->bookings->count() }}</h5>
-                        <small class="text-muted">Total Bookings</small>
+                        <small class="text-white">Total Bookings</small>
                     </div>
                 </div>
             </div>
@@ -122,18 +122,18 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <strong>Category:</strong>
+                        <strong class="text-white">Category:</strong>
                         <span class="badge bg-primary ms-2">{{ $celebrity->category }}</span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 text-white">
                         <strong>Added:</strong> {{ $celebrity->created_at->format('M d, Y') }}
                     </div>
                 </div>
                 
                 @if($celebrity->bio)
                     <div class="mt-3">
-                        <strong>Biography:</strong>
-                        <p class="mt-2">{{ $celebrity->bio }}</p>
+                        <strong class="text-white">Biography:</strong>
+                        <p class="mt-2 text-white">{{ $celebrity->bio }}</p>
                     </div>
                 @endif
             </div>
@@ -153,14 +153,14 @@
                         @foreach($celebrity->services as $service)
                             <div class="col-md-6 mb-2">
                                 <div class="border border-secondary rounded p-2">
-                                    <strong>{{ $service->serviceType->name }}</strong>
-                                    <p class="small text-muted mb-0">{{ $service->serviceType->description }}</p>
+                                    <strong class="text-white">{{ $service->serviceType->name }}</strong>
+                                    <p class="small text-white mb-0">{{ $service->serviceType->description }}</p>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 @else
-                    <div class="text-center text-muted py-3">
+                    <div class="text-center text-white py-3">
                         <i class="fas fa-list fa-2x mb-2"></i>
                         <p>No services assigned yet</p>
                         <a href="{{ route('admin.celebrities.edit', $celebrity) }}" class="btn btn-primary btn-sm">
@@ -226,7 +226,7 @@
                         </div>
                     @endif
                 @else
-                    <div class="text-center text-muted py-3">
+                    <div class="text-center text-white py-3">
                         <i class="fas fa-calendar-times fa-2x mb-2"></i>
                         <p>No bookings yet</p>
                     </div>

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Slider;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class SliderController extends Controller
 {
@@ -41,7 +42,7 @@ class SliderController extends Controller
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
+            'image' => 'required|image|mimes:jpeg,png,PNG, JPG, JPEG, jpg,gif|max:5120', // 5MB max
             'cta_text' => 'nullable|string|max:255',
             'cta_link' => 'nullable|string|max:255',
             'order_position' => 'nullable|integer|min:0',
@@ -54,7 +55,7 @@ class SliderController extends Controller
             $filename = time().'.'.$ext;
 
             $file->move('uploads/slider/',$filename);
-            $request->image = "uploads/slider/$filename";
+            $imagePath = "uploads/slider/$filename";
         }
 
         // Handle image upload
@@ -70,7 +71,7 @@ class SliderController extends Controller
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'description' => $request->description,
-            'image_path' => $request->image,
+            'image_path' => $imagePath,
             'cta_text' => $request->cta_text,
             'cta_link' => $request->cta_link,
             'order_position' => $orderPosition,
@@ -113,15 +114,29 @@ class SliderController extends Controller
             'is_active' => 'boolean'
         ]);
 
-        // Handle image upload if new image is provided
-        $imagePath = $slider->image_path;
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($imagePath && !filter_var($imagePath, FILTER_VALIDATE_URL)) {
-                Storage::disk('public')->delete($imagePath);
+        if($request->hasFile('image')){
+ 
+            $path = $slider->image_path;
+            if(File::exists($path)){
+                File::delete($path);
             }
-            $imagePath = $request->file('image')->store('sliders', 'public');
+            $file = $request->file('image');
+            $ext = $file->getClientOriginalExtension();
+            $filename = time().'.'.$ext;
+
+            $file->move('uploads/slider/',$filename);
+            $imagePath = "uploads/slider/$filename";
         }
+
+        // // Handle image upload if new image is provided
+        // $imagePath = $slider->image_path;
+        // if ($request->hasFile('image')) {
+        //     // Delete old image
+        //     if ($imagePath && !filter_var($imagePath, FILTER_VALIDATE_URL)) {
+        //         Storage::disk('public')->delete($imagePath);
+        //     }
+        //     $imagePath = $request->file('image')->store('sliders', 'public');
+        // }
 
         $slider->update([
             'title' => $request->title,

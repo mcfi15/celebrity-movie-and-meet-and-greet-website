@@ -72,7 +72,7 @@ class BookingController extends Controller
 
     public function create()
     {
-        $celebrities = Celebrity::where('is_available', true)->orderBy('name')->get();
+        $celebrities = Celebrity::where('is_active', true)->orderBy('name')->get();
         $serviceTypes = ServiceType::orderBy('name')->get();
         
         return view('admin.bookings.create', compact('celebrities', 'serviceTypes'));

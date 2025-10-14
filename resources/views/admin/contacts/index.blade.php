@@ -45,7 +45,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-warning">{{ $totalMessages }}</h5>
-                        <p class="card-text">Total Messages</p>
+                        <p class="card-text text-white">Total Messages</p>
                     </div>
                     <i class="fas fa-envelope fa-2x text-warning"></i>
                 </div>
@@ -58,7 +58,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-danger">{{ $unreadMessages }}</h5>
-                        <p class="card-text">Unread</p>
+                        <p class="card-text text-white">Unread</p>
                     </div>
                     <i class="fas fa-envelope-open fa-2x text-danger"></i>
                 </div>
@@ -71,7 +71,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-info">{{ $readMessages }}</h5>
-                        <p class="card-text">Read</p>
+                        <p class="card-text text-white">Read</p>
                     </div>
                     <i class="fas fa-eye fa-2x text-info"></i>
                 </div>
@@ -84,7 +84,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title text-success">{{ $repliedMessages }}</h5>
-                        <p class="card-text">Replied</p>
+                        <p class="card-text text-white">Replied</p>
                     </div>
                     <i class="fas fa-reply fa-2x text-success"></i>
                 </div>

@@ -57,7 +57,7 @@
                         </div>
 
                         <!-- Customer Information -->
-                        <h5 class="mt-4 mb-3">Customer Information</h5>
+                        <h5 class="mt-4 mb-3 text-white">Customer Information</h5>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
@@ -94,7 +94,7 @@
                         </div>
 
                         <!-- Event Details -->
-                        <h5 class="mt-4 mb-3">Event Details</h5>
+                        <h5 class="mt-4 mb-3 text-white">Event Details</h5>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
@@ -141,7 +141,7 @@
                         </div>
 
                         <!-- Status and Payment -->
-                        <h5 class="mt-4 mb-3">Status Information</h5>
+                        <h5 class="mt-4 mb-3 text-white">Status Information</h5>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
@@ -176,7 +176,7 @@
                         </div>
 
                         <!-- Additional Information -->
-                        <h5 class="mt-4 mb-3">Additional Information</h5>
+                        <h5 class="mt-4 mb-3 text-white">Additional Information</h5>
                         <div class="form-group mb-3">
                             <label for="special_requests" class="form-label">Special Requests</label>
                             <textarea class="form-control @error('special_requests') is-invalid @enderror" 

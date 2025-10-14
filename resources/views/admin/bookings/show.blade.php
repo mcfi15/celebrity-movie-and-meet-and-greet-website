@@ -99,20 +99,20 @@
             </div>
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-sm-4"><strong>Name:</strong></div>
-                    <div class="col-sm-8">{{ $booking->customer_name }}</div>
+                    <div class="col-sm-4 text-white"><strong>Name:</strong></div>
+                    <div class="col-sm-8 text-white">{{ $booking->customer_name }}</div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-4"><strong>Email:</strong></div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-4 text-white"><strong>Email:</strong></div>
+                    <div class="col-sm-8 text-white">
                         <a href="mailto:{{ $booking->customer_email }}" class="text-warning">
                             {{ $booking->customer_email }}
                         </a>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-4"><strong>Phone:</strong></div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-4 text-white"><strong>Phone:</strong></div>
+                    <div class="col-sm-8 text-white">
                         <a href="tel:{{ $booking->customer_phone }}" class="text-warning">
                             {{ $booking->customer_phone }}
                         </a>
@@ -120,8 +120,8 @@
                 </div>
                 @if($booking->customer_address)
                     <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Address:</strong></div>
-                        <div class="col-sm-8">{{ $booking->customer_address }}</div>
+                        <div class="col-sm-4 text-white"><strong>Address:</strong></div>
+                        <div class="col-sm-8 text-white">{{ $booking->customer_address }}</div>
                     </div>
                 @endif
             </div>
@@ -138,32 +138,32 @@
             <div class="card-body">
                 @if($booking->event_date)
                     <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Date:</strong></div>
-                        <div class="col-sm-8">{{ \Carbon\Carbon::parse($booking->event_date)->format('l, F d, Y') }}</div>
+                        <div class="col-sm-4 text-white"><strong>Date:</strong></div>
+                        <div class="col-sm-8 text-white">{{ \Carbon\Carbon::parse($booking->event_date)->format('l, F d, Y') }}</div>
                     </div>
                 @endif
                 @if($booking->event_time)
                     <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Time:</strong></div>
-                        <div class="col-sm-8">{{ \Carbon\Carbon::parse($booking->event_time)->format('h:i A') }}</div>
+                        <div class="col-sm-4 text-white"><strong>Time:</strong></div>
+                        <div class="col-sm-8 text-white">{{ \Carbon\Carbon::parse($booking->event_time)->format('h:i A') }}</div>
                     </div>
                 @endif
                 @if($booking->duration_hours)
                     <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Duration:</strong></div>
-                        <div class="col-sm-8">{{ $booking->duration_hours }} hour(s)</div>
+                        <div class="col-sm-4 text-white"><strong>Duration:</strong></div>
+                        <div class="col-sm-8 text-white">{{ $booking->duration_hours }} hour(s)</div>
                     </div>
                 @endif
                 @if($booking->event_location)
                     <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Location:</strong></div>
-                        <div class="col-sm-8">{{ $booking->event_location }}</div>
+                        <div class="col-sm-4 text-white"><strong>Location:</strong></div>
+                        <div class="col-sm-8 text-white">{{ $booking->event_location }}</div>
                     </div>
                 @endif
                 @if($booking->special_requests)
                     <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Special Requests:</strong></div>
-                        <div class="col-sm-8">{{ $booking->special_requests }}</div>
+                        <div class="col-sm-4 text-white"><strong>Special Requests:</strong></div>
+                        <div class="col-sm-8 text-white">{{ $booking->special_requests }}</div>
                     </div>
                 @endif
             </div>
@@ -195,28 +195,28 @@
                         </div>
                     @endif
                     <div>
-                        <h4 class="mb-1">{{ $booking->celebrity->name }}</h4>
+                        <h4 class="mb-1 text-white">{{ $booking->celebrity->name }}</h4>
                         <p class="text-muted mb-1">{{ $booking->celebrity->profession }}</p>
                         <span class="badge bg-primary">{{ $booking->celebrity->category }}</span>
                     </div>
                 </div>
                 
                 <div class="row mb-3">
-                    <div class="col-sm-4"><strong>Service:</strong></div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-4 text-white"><strong>Service:</strong></div>
+                    <div class="col-sm-8 text-white">
                         <span class="badge bg-secondary fs-6">{{ $booking->serviceType->name }}</span>
                     </div>
                 </div>
                 
                 <div class="row mb-3">
-                    <div class="col-sm-4"><strong>Hourly Rate:</strong></div>
-                    <div class="col-sm-8">${{ number_format($booking->celebrity->hourly_rate, 2) }}/hour</div>
+                    <div class="col-sm-4 text-white"><strong>Hourly Rate:</strong></div>
+                    <div class="col-sm-8 text-white">${{ number_format($booking->celebrity->hourly_rate, 2) }}/hour</div>
                 </div>
                 
                 @if($booking->celebrity->bio)
                     <div class="row mb-3">
                         <div class="col-sm-12">
-                            <strong>About:</strong>
+                            <strong class="text-white">About:</strong>
                             <p class="mt-2 text-muted">{{ Str::limit($booking->celebrity->bio, 200) }}</p>
                         </div>
                     </div>
@@ -235,8 +235,8 @@
                 </div>
                 <div class="card-body">
                     <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Method:</strong></div>
-                        <div class="col-sm-8">
+                        <div class="col-sm-4 text-white"><strong>Method:</strong></div>
+                        <div class="col-sm-8 text-white">
                             @if($booking->payment_method === 'stripe')
                                 <span class="badge bg-info">Credit Card (Stripe)</span>
                             @elseif($booking->payment_method === 'crypto')
@@ -249,8 +249,8 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Status:</strong></div>
-                        <div class="col-sm-8">
+                        <div class="col-sm-4 text-white"><strong>Status:</strong></div>
+                        <div class="col-sm-8 text-white">
                             @if($booking->payment_status === 'paid')
                                 <span class="badge bg-success">Paid</span>
                             @elseif($booking->payment_status === 'pending')
@@ -262,13 +262,13 @@
                     </div>
                     @if($booking->payment_transaction_id)
                         <div class="row mb-3">
-                            <div class="col-sm-4"><strong>Transaction ID:</strong></div>
-                            <div class="col-sm-8"><code>{{ $booking->payment_transaction_id }}</code></div>
+                            <div class="col-sm-4 text-white"><strong>Transaction ID:</strong></div>
+                            <div class="col-sm-8 text-white"><code>{{ $booking->payment_transaction_id }}</code></div>
                         </div>
                     @endif
                     <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Amount:</strong></div>
-                        <div class="col-sm-8"><strong class="text-warning">${{ number_format($booking->total_amount ?? 0, 2) }}</strong></div>
+                        <div class="col-sm-4 text-white"><strong>Amount:</strong></div>
+                        <div class="col-sm-8 text-white"><strong class="text-warning">${{ number_format($booking->total_amount ?? 0, 2) }}</strong></div>
                     </div>
                 </div>
             </div>
@@ -288,7 +288,7 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <p class="mb-3">This booking is waiting for your review. Please approve or reject it.</p>
+                    <p class="mb-3 text-white">This booking is waiting for your review. Please approve or reject it.</p>
                     <div class="d-flex gap-3">
                         <form action="{{ route('admin.bookings.approve', $booking) }}" method="POST" class="d-inline">
                             @csrf
