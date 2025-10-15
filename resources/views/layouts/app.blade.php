@@ -238,7 +238,7 @@
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
                     @if($settings->site_logo)
-                        <img src="{{ asset($settings->site_logo) }}" alt="{{ $settings->site_name }}" height="40" class="me-2">
+                        <img src="{{ asset($settings->site_logo) }}" alt="{{ $settings->site_name }}" style="height:60px; width:120px;" class="me-2">
                     @endif
                     {{-- <span class="text-gold fw-bold">{{ $settings->site_name }}</span> --}}
                 </a>
@@ -330,15 +330,15 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-4 mb-4">
-                        <img src="{{ asset($appSetting->site_logo) }}" alt="">
+                        <img src="{{ asset($appSetting->site_logo) }}" alt="" style="height:70px important!; width:150px;">
                         {{-- <h5 class="text-gold mb-3">{{ $settings->site_name }}</h5> --}}
                         <p class="text-unmute">{{ $settings->site_description }}</p>
-                        <div class="d-flex gap-3">
+                        <!-- <div class="d-flex gap-3">
                             <a href="#" class="text-gold"><i class="fab fa-facebook-f"></i></a>
                             <a href="#" class="text-gold"><i class="fab fa-twitter"></i></a>
                             <a href="#" class="text-gold"><i class="fab fa-instagram"></i></a>
                             <a href="#" class="text-gold"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-lg-2 col-md-6 mb-4">
                         <h6 class="text-gold mb-3">Quick Links</h6>

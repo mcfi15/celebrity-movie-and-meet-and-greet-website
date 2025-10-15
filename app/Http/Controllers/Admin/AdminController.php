@@ -10,6 +10,8 @@ use App\Models\Newsletter;
 use App\Models\ServiceType;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -58,5 +60,32 @@ class AdminController extends Controller
             'chartLabels',
             'chartData'
         ));
+    }
+
+    public function showChangePassword()
+    {
+        return view('admin.change-password');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        // Check if current password is correct
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Current password is incorrect.']);
+        }
+
+        // Update password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return redirect()->route('admin.change-password')
+            ->with('success', 'Password has been changed successfully!');
     }
 }

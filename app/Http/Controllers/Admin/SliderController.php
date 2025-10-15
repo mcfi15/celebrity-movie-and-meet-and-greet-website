@@ -47,7 +47,7 @@ class SliderController extends Controller
             'cta_link' => 'nullable|string|max:255',
             'order_position' => 'nullable|integer|min:0',
             'is_active' => 'boolean'
-        ]);
+        ]); 
 
         if($request->hasFile('image')){
             $file = $request->file('image');
@@ -156,12 +156,26 @@ class SliderController extends Controller
     /**
      * Remove the specified slider
      */
-    public function destroy(Slider $slider)
-    {
-        $slider->delete(); // Image deletion is handled in the model's boot method
+    // public function destroy(Slider $slider)
+    // {
+    //     $slider->delete(); // Image deletion is handled in the model's boot method
         
-        return redirect()->route('admin.sliders.index')
+    //     return redirect()->route('admin.sliders.index')
+    //         ->with('success', 'Slider deleted successfully!');
+    // }
+
+    public function destroy(Slider $slider){
+        if($slider->count() > 0){
+            $destination = $slider->image;
+            if(File::exists($destination)){
+                File::delete($destination);
+            }
+            $slider->delete();
+            return redirect()->route('admin.sliders.index')
             ->with('success', 'Slider deleted successfully!');
+            
+        }
+        return redirect()-back()->with('message', 'Something went wrong'); 
     }
 
     /**

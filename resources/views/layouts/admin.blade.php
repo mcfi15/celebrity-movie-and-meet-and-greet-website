@@ -327,6 +327,18 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}" href="{{ route('admin.testimonials.index') }}">
+                                <i class="fas fa-quote-right"></i>
+                                Testimonials
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.change-password') ? 'active' : '' }}" href="{{ route('admin.change-password') }}">
+                                <i class="fas fa-lock"></i>
+                                Change Password
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
                                 <i class="fas fa-cog"></i>
                                 Site Settings
@@ -365,7 +377,7 @@
                         </div>
                         
                         <div class="ms-auto">
-                            <span class="navbar-text me-3">
+                            <span class="navbar-text me-3 text-white">
                                 Welcome, <strong>{{ Auth::user()->name }}</strong>
                             </span>
                         </div>

@@ -152,23 +152,18 @@ class CelebrityController extends Controller
             ->with('success', 'Celebrity has been updated successfully.');
     }
 
-    public function destroy(Celebrity $celebrity)
-    {
-        // Delete images
-        if ($celebrity->image) {
-            Storage::disk('public')->delete($celebrity->image);
-        }
-        
-        if ($celebrity->gallery) {
-            foreach ($celebrity->gallery as $imagePath) {
-                Storage::disk('public')->delete($imagePath);
+    public function destroy(Celebrity $celebrity){
+        if($celebrity->count() > 0){
+            $destination = $celebrity->image;
+            if(File::exists($destination)){
+                File::delete($destination);
             }
-        }
-
-        $celebrity->delete();
-
-        return redirect()->route('admin.celebrities.index')
+            $celebrity->delete();
+            return redirect()->route('admin.celebrities.index')
             ->with('success', 'Celebrity has been deleted successfully.');
+            
+        }
+        return redirect()-back()->with('message', 'Something went wrong'); 
     }
 
     public function services(Celebrity $celebrity)
@@ -212,23 +207,23 @@ class CelebrityController extends Controller
         return back()->with('success', 'Service has been removed from celebrity.');
     }
 
-    private function uploadImage($file, $directory)
-    {
-        $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-        $path = $directory . '/' . $filename;
+    // private function uploadImage($file, $directory)
+    // {
+    //     $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+    //     $path = $directory . '/' . $filename;
         
-        // Resize and save image
-        $image = Image::make($file)
-            ->resize(800, 800, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })
-            ->encode('jpg', 85);
+    //     // Resize and save image
+    //     $image = Image::make($file)
+    //         ->resize(800, 800, function ($constraint) {
+    //             $constraint->aspectRatio();
+    //             $constraint->upsize();
+    //         })
+    //         ->encode('jpg', 85);
             
-        Storage::disk('public')->put($path, $image);
+    //     Storage::disk('public')->put($path, $image);
         
-        return $path;
-    }
+    //     return $path;
+    // }
 
     public function toggleAvailability(Celebrity $celebrity)
     {
