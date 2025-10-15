@@ -73,6 +73,11 @@ class Booking extends Model
         return $this->belongsTo(ServiceType::class);
     }
 
+    public function paymentMethodModel()
+    {
+        return $this->belongsTo(PaymentMethod::class, 'payment_method', 'slug');
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', 'pending');

@@ -11,7 +11,7 @@
             <div class="col-lg-5">
                 <div class="celebrity-image-container">
                     @if($celebrity->image)
-                        <img src="{{ Storage::url($celebrity->image) }}" 
+                        <img src="{{ asset($celebrity->image) }}" 
                              alt="{{ $celebrity->name }}" 
                              class="img-fluid rounded-3 shadow-lg celebrity-main-image">
                     @else
@@ -192,7 +192,7 @@
             @foreach(array_slice($celebrity->gallery, 0, 6) as $index => $image)
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="gallery-item">
-                        <img src="{{ Storage::url($image) }}" 
+                        <img src="{{ asset($image) }}" 
                              alt="Gallery image {{ $index + 1 }}" 
                              class="img-fluid rounded-3 shadow gallery-image"
                              data-bs-toggle="modal" 
@@ -204,7 +204,7 @@
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content bg-dark">
                                 <div class="modal-body p-0">
-                                    <img src="{{ Storage::url($image) }}" 
+                                    <img src="{{ asset($image) }}" 
                                          alt="Gallery image {{ $index + 1 }}" 
                                          class="img-fluid w-100">
                                 </div>
@@ -280,7 +280,7 @@
                     <div class="card bg-card h-100 celebrity-card">
                         <div class="position-relative">
                             @if($related->image)
-                                <img src="{{ Storage::url($related->image) }}" 
+                                <img src="{{ asset($related->image) }}" 
                                      class="card-img-top" 
                                      alt="{{ $related->name }}"
                                      style="height: 250px; object-fit: cover;">

@@ -14,11 +14,11 @@ class CelebrityService extends Model
         'service_type_id',
         'price',
         'description',
-        'is_available',
+        'is_active',
     ];
 
     protected $casts = [
-        'is_available' => 'boolean',
+        'is_active' => 'boolean',
         'price' => 'decimal:2',
     ];
 
@@ -40,6 +40,6 @@ class CelebrityService extends Model
 
     public function scopeAvailable($query)
     {
-        return $query->where('is_available', true);
+        return $query->where('is_active', true);
     }
 }

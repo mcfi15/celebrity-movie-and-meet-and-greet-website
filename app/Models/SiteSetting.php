@@ -24,9 +24,13 @@ class SiteSetting extends Model
         'stripe_enabled',
         'crypto_enabled',
         'bank_transfer_enabled',
+        'paypal_enabled',
+        'cash_enabled',
         'stripe_public_key',
         'stripe_secret_key',
         'crypto_wallet_address',
+        'paypal_client_id',
+        'paypal_client_secret',
         'theme_color',
     ];
 
@@ -35,6 +39,8 @@ class SiteSetting extends Model
         'stripe_enabled' => 'boolean',
         'crypto_enabled' => 'boolean',
         'bank_transfer_enabled' => 'boolean',
+        'paypal_enabled' => 'boolean',
+        'cash_enabled' => 'boolean',
         'payment_methods' => 'array',
     ];
 
@@ -47,6 +53,8 @@ class SiteSetting extends Model
             'site_address' => '123 Hollywood Blvd, Los Angeles, CA 90028',
             'site_description' => 'Premier celebrity booking agency for all your entertainment needs',
             'payment_enabled' => true,
+            'stripe_enabled' => true,
+            'crypto_enabled' => true,
             'payment_methods' => ['stripe', 'crypto'],
             'theme_color' => 'dark-gold',
         ]);

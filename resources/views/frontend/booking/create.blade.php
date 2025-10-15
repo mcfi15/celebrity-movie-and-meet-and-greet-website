@@ -133,42 +133,81 @@
                                       placeholder="Any special requests or questions for the celebrity...">{{ old('customer_message') }}</textarea>
                         </div>
 
-                        @if($settings->payment_enabled && $settings->payment_methods)
+                        @if($paymentMethods->count() > 0)
                         <!-- Payment Method -->
                         <h5 class="text-gold mb-3">Payment Method</h5>
                         <div class="mb-4">
-                            @if(in_array('stripe', $settings->payment_methods))
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="payment_stripe" value="stripe">
-                                    <label class="form-check-label" for="payment_stripe">
-                                        <i class="fab fa-cc-stripe me-2 text-primary"></i> Credit/Debit Card (Stripe)
+                            @foreach($paymentMethods as $paymentMethod)
+                                <div class="form-check mb-3 payment-method-option" data-method="{{ $paymentMethod->slug }}">
+                                    <input class="form-check-input payment-method-radio" 
+                                           type="radio" 
+                                           name="payment_method" 
+                                           id="payment_{{ $paymentMethod->slug }}" 
+                                           value="{{ $paymentMethod->slug }}"
+                                           data-min-amount="{{ $paymentMethod->minimum_amount ?? 0 }}"
+                                           data-max-amount="{{ $paymentMethod->maximum_amount ?? 0 }}"
+                                           data-fee-percentage="{{ $paymentMethod->processing_fee_percentage ?? 0 }}"
+                                           data-fee-fixed="{{ $paymentMethod->processing_fee_fixed ?? 0 }}"
+                                           data-instructions="{{ $paymentMethod->instructions ?? '' }}">
+                                    <label class="form-check-label w-100" for="payment_{{ $paymentMethod->slug }}">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                {!! $paymentMethod->icon_html !!}
+                                                <span class="ms-2 fw-bold">{{ $paymentMethod->name }}</span>
+                                                @if($paymentMethod->processing_fee_percentage > 0 || $paymentMethod->processing_fee_fixed > 0)
+                                                    <small class="text-muted ms-2">(Fee: {{ $paymentMethod->formatted_processing_fee }})</small>
+                                                @endif
+                                            </div>
+                                            @if($paymentMethod->minimum_amount || $paymentMethod->maximum_amount)
+                                                <small class="text-muted">{{ $paymentMethod->amount_limits_text }}</small>
+                                            @endif
+                                        </div>
+                                        @if($paymentMethod->description)
+                                            <div class="mt-1">
+                                                <small class="text-muted">{{ $paymentMethod->description }}</small>
+                                            </div>
+                                        @endif
                                     </label>
+                                    @if($paymentMethod->instructions)
+                                        <div class="mt-2 ms-4 payment-instructions" id="instructions_{{ $paymentMethod->slug }}" style="display: none;">
+                                            <div class="alert alert-info py-2 mb-0">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                <strong>Payment Instructions:</strong><br>
+                                                {{ $paymentMethod->instructions }}
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
-                            @endif
-                            
-                            @if(in_array('crypto', $settings->payment_methods))
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="payment_crypto" value="crypto">
-                                    <label class="form-check-label" for="payment_crypto">
-                                        <i class="fab fa-bitcoin me-2 text-warning"></i> Cryptocurrency
-                                    </label>
-                                </div>
-                            @endif
-                            
-                            @if(in_array('bank_transfer', $settings->payment_methods))
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="payment_bank" value="bank_transfer">
-                                    <label class="form-check-label" for="payment_bank">
-                                        <i class="fas fa-university me-2 text-info"></i> Bank Transfer
-                                    </label>
-                                </div>
-                            @endif
+                            @endforeach
                             
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="payment_method" id="payment_later" value="" checked>
+                                <input class="form-check-input payment-method-radio" type="radio" name="payment_method" id="payment_later" value="" checked>
                                 <label class="form-check-label" for="payment_later">
                                     <i class="fas fa-clock me-2 text-muted"></i> Pay Later (After Approval)
+                                    <br><small class="text-muted">Complete payment after your booking is approved by our team</small>
                                 </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Summary -->
+                        <div id="payment-summary" class="card mt-3" style="display: none;">
+                            <div class="card-header bg-gold text-dark">
+                                <h6 class="mb-0"><i class="fas fa-receipt me-2"></i>Payment Summary</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-8">Booking Amount:</div>
+                                    <div class="col-4 text-end" id="summary-base-amount">$0.00</div>
+                                </div>
+                                <div class="row" id="payment-fee-row" style="display: none;">
+                                    <div class="col-8">Processing Fee:</div>
+                                    <div class="col-4 text-end" id="summary-fee-amount">$0.00</div>
+                                </div>
+                                <hr>
+                                <div class="row fw-bold">
+                                    <div class="col-8">Total Amount:</div>
+                                    <div class="col-4 text-end text-success" id="summary-total-amount">$0.00</div>
+                                </div>
                             </div>
                         </div>
                         @endif
@@ -231,6 +270,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     basePriceSpan.textContent = `$${basePrice.toLocaleString()}`;
                     totalPriceSpan.textContent = `$${totalPrice.toLocaleString()}`;
                     durationDisplay.textContent = `${duration} hour${duration > 1 ? 's' : ''}`;
+                    
+                    // Update payment summary if a payment method is selected
+                    const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
+                    if (selectedPaymentMethod && selectedPaymentMethod.value) {
+                        updatePaymentSummary(selectedPaymentMethod);
+                    }
                 })
                 .catch(error => {
                     console.error('Error fetching price:', error);
@@ -249,10 +294,102 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial price update if values are pre-selected
     updatePrice();
     
+    // Payment method handling
+    const paymentMethodRadios = document.querySelectorAll('.payment-method-radio');
+    const paymentSummary = document.getElementById('payment-summary');
+    
+    paymentMethodRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            handlePaymentMethodChange(this);
+        });
+    });
+    
+    function handlePaymentMethodChange(selectedRadio) {
+        // Hide all payment instructions
+        document.querySelectorAll('.payment-instructions').forEach(el => {
+            el.style.display = 'none';
+        });
+        
+        if (selectedRadio.value && selectedRadio.value !== '') {
+            // Show instructions for selected payment method
+            const instructionsEl = document.getElementById('instructions_' + selectedRadio.value);
+            if (instructionsEl) {
+                instructionsEl.style.display = 'block';
+            }
+            
+            // Show payment summary
+            updatePaymentSummary(selectedRadio);
+            paymentSummary.style.display = 'block';
+        } else {
+            // Hide payment summary for "pay later"
+            paymentSummary.style.display = 'none';
+        }
+    }
+    
+    function updatePaymentSummary(paymentMethodRadio) {
+        const totalPriceText = totalPriceSpan ? totalPriceSpan.textContent : '$0';
+        const baseAmount = parseFloat(totalPriceText.replace(/[$,]/g, '')) || 0;
+        
+        const feePercentage = parseFloat(paymentMethodRadio.dataset.feePercentage) || 0;
+        const feeFixed = parseFloat(paymentMethodRadio.dataset.feeFixed) || 0;
+        
+        const feeAmount = (baseAmount * feePercentage / 100) + feeFixed;
+        const totalAmount = baseAmount + feeAmount;
+        
+        document.getElementById('summary-base-amount').textContent = '$' + baseAmount.toLocaleString('en-US', {minimumFractionDigits: 2});
+        
+        const feeRow = document.getElementById('payment-fee-row');
+        if (feeAmount > 0) {
+            document.getElementById('summary-fee-amount').textContent = '$' + feeAmount.toLocaleString('en-US', {minimumFractionDigits: 2});
+            feeRow.style.display = 'flex';
+        } else {
+            feeRow.style.display = 'none';
+        }
+        
+        document.getElementById('summary-total-amount').textContent = '$' + totalAmount.toLocaleString('en-US', {minimumFractionDigits: 2});
+        
+        // Validate amount limits
+        validatePaymentLimits(paymentMethodRadio, totalAmount);
+    }
+    
+    function validatePaymentLimits(paymentMethodRadio, amount) {
+        const minAmount = parseFloat(paymentMethodRadio.dataset.minAmount) || 0;
+        const maxAmount = parseFloat(paymentMethodRadio.dataset.maxAmount) || 0;
+        
+        const submitBtn = document.getElementById('submit-btn');
+        const methodName = paymentMethodRadio.parentElement.querySelector('label .fw-bold').textContent;
+        
+        if (minAmount > 0 && amount < minAmount) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>Amount below ${methodName} minimum ($${minAmount.toLocaleString()})`;
+            submitBtn.classList.add('btn-warning');
+            submitBtn.classList.remove('btn-gold');
+        } else if (maxAmount > 0 && amount > maxAmount) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>Amount exceeds ${methodName} maximum ($${maxAmount.toLocaleString()})`;
+            submitBtn.classList.add('btn-warning');
+            submitBtn.classList.remove('btn-gold');
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Booking Request';
+            submitBtn.classList.remove('btn-warning');
+            submitBtn.classList.add('btn-gold');
+        }
+    }
+    
     // Form submission handling
     document.getElementById('booking-form').addEventListener('submit', function(e) {
         const submitBtn = document.getElementById('submit-btn');
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
+        const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
+        
+        if (selectedPaymentMethod && selectedPaymentMethod.value) {
+            // Show processing message for payment methods
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing Payment...';
+        } else {
+            // Show booking message for pay later
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Creating Booking...';
+        }
+        
         submitBtn.disabled = true;
     });
 });

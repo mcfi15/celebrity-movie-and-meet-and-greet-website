@@ -112,7 +112,7 @@
                                id="site_logo" 
                                name="site_logo" 
                                accept="image/*">
-                        <div class="form-text text-white">Upload a new logo to replace the current one. Recommended size: 200x50px</div>
+                        <div class="form-text">Upload a new logo to replace the current one. Recommended size: 200x50px</div>
                         @error('site_logo')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -139,7 +139,7 @@
                                    {{ old('payment_enabled', $settings['payment_enabled'] ?? false) ? 'checked' : '' }}>
                             <label class="form-check-label text-white" for="payment_enabled">
                                 <strong>Enable Payments</strong>
-                                <br><small class="text-white">Allow customers to make payments when booking</small>
+                                <br><small class="text-muted">Allow customers to make payments when booking</small>
                             </label>
                         </div>
                     </div>
@@ -185,6 +185,36 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Additional Payment Methods -->
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       id="paypal_enabled" 
+                                       name="paypal_enabled" 
+                                       value="1" 
+                                       {{ old('paypal_enabled', $settings['paypal_enabled'] ?? false) ? 'checked' : '' }}>
+                                <label class="form-check-label text-white" for="paypal_enabled">
+                                    PayPal
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       id="cash_enabled" 
+                                       name="cash_enabled" 
+                                       value="1" 
+                                       {{ old('cash_enabled', $settings['cash_enabled'] ?? false) ? 'checked' : '' }}>
+                                <label class="form-check-label text-white" for="cash_enabled">
+                                    Cash Payment
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -195,12 +225,12 @@
                 <div class="card">
                     <div class="card-header">
                         <h6 class="mb-0">
-                            <i class="fas fa-image me-2 text-white"></i>
+                            <i class="fas fa-image me-2"></i>
                             Current Logo
                         </h6>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ asset( $settings['site_logo']) }}" 
+                        <img src="{{ asset($settings['site_logo']) }}" 
                              alt="Site Logo" 
                              class="img-fluid" 
                              style="max-height: 100px;">
@@ -211,7 +241,7 @@
             <!-- Quick Stats -->
             <div class="card {{ isset($settings['site_logo']) && $settings['site_logo'] ? 'mt-4' : '' }}">
                 <div class="card-header">
-                    <h6 class="mb-0 ">
+                    <h6 class="mb-0">
                         <i class="fas fa-chart-bar me-2"></i>
                         Site Statistics
                     </h6>
@@ -220,19 +250,19 @@
                     <div class="row text-center">
                         <div class="col-6 mb-3">
                             <h4 class="text-warning">{{ $stats['celebrities'] ?? 0 }}</h4>
-                            <small class="text-white">Celebrities</small>
+                            <small class="text-muted">Celebrities</small>
                         </div>
                         <div class="col-6 mb-3">
                             <h4 class="text-info">{{ $stats['bookings'] ?? 0 }}</h4>
-                            <small class="text-white">Bookings</small>
+                            <small class="text-muted">Bookings</small>
                         </div>
                         <div class="col-6">
                             <h4 class="text-success">{{ $stats['services'] ?? 0 }}</h4>
-                            <small class="text-white">Services</small>
+                            <small class="text-muted">Services</small>
                         </div>
                         <div class="col-6">
                             <h4 class="text-primary">{{ $stats['messages'] ?? 0 }}</h4>
-                            <small class="text-white">Messages</small>
+                            <small class="text-muted">Messages</small>
                         </div>
                     </div>
                 </div>

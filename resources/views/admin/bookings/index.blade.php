@@ -157,7 +157,7 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     @if($booking->celebrity->image)
-                                        <img src="{{ asset('storage/' . $booking->celebrity->image) }}" 
+                                        <img src="{{ asset( $booking->celebrity->image) }}" 
                                              alt="{{ $booking->celebrity->name }}" 
                                              class="rounded-circle me-2" 
                                              width="30" 

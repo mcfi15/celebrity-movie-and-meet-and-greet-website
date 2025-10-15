@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\PaymentMethodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,6 +97,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('sliders', SliderController::class);
     Route::post('sliders/update-order', [SliderController::class, 'updateOrder'])->name('sliders.update-order');
     Route::post('sliders/{slider}/toggle-status', [SliderController::class, 'toggleStatus'])->name('sliders.toggle-status');
+    
+    // Payment Methods Management
+    Route::resource('payment-methods', PaymentMethodController::class);
+    Route::post('payment-methods/update-order', [PaymentMethodController::class, 'updateOrder'])->name('payment-methods.update-order');
+    Route::post('payment-methods/{paymentMethod}/toggle-status', [PaymentMethodController::class, 'toggleStatus'])->name('payment-methods.toggle-status');
 });
 
 // Redirect admin routes without trailing slash

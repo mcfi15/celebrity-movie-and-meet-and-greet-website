@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Celebrity;
 use App\Models\ServiceType;
-use App\Models\CelebrityService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\CelebrityService;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 
 class CelebrityController extends Controller
 {
@@ -42,18 +43,27 @@ class CelebrityController extends Controller
             'hourly_rate' => 'required|numeric|min:0',
             'bio' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_available' => 'boolean',
+            'is_active' => 'boolean',
             'service_types' => 'array',
             'service_types.*' => 'exists:service_types,id',
         ]);
 
         $celebrity = new Celebrity($request->except(['image', 'service_types']));
-        $celebrity->is_available = $request->has('is_available');
+        $celebrity->is_active = $request->has('is_active');
         
         // Handle main image upload
-        if ($request->hasFile('image')) {
-            $imagePath = $this->uploadImage($request->file('image'), 'celebrities');
-            $celebrity->image = $imagePath;
+        // if ($request->hasFile('image')) {
+        //     $imagePath = $this->uploadImage($request->file('image'), 'celebrities');
+        //     $celebrity->image = $imagePath;
+        // }
+
+        if($request->hasFile('image')){
+            $file = $request->file('image');
+            $ext = $file->getClientOriginalExtension();
+            $filename = time().'.'.$ext;
+
+            $file->move('uploads/celebrities/',$filename);
+            $celebrity->image = "uploads/celebrities/$filename";
         }
 
         $celebrity->save();
@@ -93,22 +103,37 @@ class CelebrityController extends Controller
             'hourly_rate' => 'required|numeric|min:0',
             'bio' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_available' => 'boolean',
+            'is_active' => 'boolean',
             'service_types' => 'array',
             'service_types.*' => 'exists:service_types,id',
         ]);
 
         $celebrity->fill($request->except(['image', 'service_types']));
-        $celebrity->is_available = $request->has('is_available');
+        $celebrity->is_active = $request->has('is_active');
 
-        // Handle main image upload
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($celebrity->image) {
-                Storage::disk('public')->delete($celebrity->image);
+        if($request->hasFile('image')){
+ 
+            $path = $celebrity->image;
+            if(File::exists($path)){
+                File::delete($path);
             }
-            $celebrity->image = $this->uploadImage($request->file('image'), 'celebrities');
+            $file = $request->file('image');
+            $ext = $file->getClientOriginalExtension();
+            $filename = time().'.'.$ext;
+
+            $file->move('uploads/celebrities/',$filename);
+            $celebrity->image = "uploads/celebrities/$filename";
         }
+
+        
+        // Handle main image upload
+        // if ($request->hasFile('image')) {
+        //     // Delete old image
+        //     if ($celebrity->image) {
+        //         Storage::disk('public')->delete($celebrity->image);
+        //     }
+        //     $celebrity->image = $this->uploadImage($request->file('image'), 'celebrities');
+        // }
 
         $celebrity->save();
 
@@ -160,7 +185,7 @@ class CelebrityController extends Controller
             'service_type_id' => 'required|exists:service_types,id|unique:celebrity_services,service_type_id,NULL,id,celebrity_id,' . $celebrity->id,
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
-            'is_available' => 'boolean',
+            'is_active' => 'boolean',
         ]);
 
         $celebrity->services()->create($request->all());
@@ -173,7 +198,7 @@ class CelebrityController extends Controller
         $request->validate([
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
-            'is_available' => 'boolean',
+            'is_active' => 'boolean',
         ]);
 
         $service->update($request->all());
@@ -207,10 +232,10 @@ class CelebrityController extends Controller
 
     public function toggleAvailability(Celebrity $celebrity)
     {
-        $celebrity->is_available = !$celebrity->is_available;
+        $celebrity->is_active = !$celebrity->is_active;
         $celebrity->save();
 
-        $status = $celebrity->is_available ? 'available' : 'unavailable';
+        $status = $celebrity->is_active ? 'available' : 'unavailable';
         
         return redirect()->back()
             ->with('success', "Celebrity has been marked as {$status}.");

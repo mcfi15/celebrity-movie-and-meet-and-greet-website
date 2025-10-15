@@ -12,8 +12,8 @@
     <title>@yield('title', $settings->site_name)</title>
     <meta name="description" content="@yield('description', $settings->site_description)">
     
-    @if($settings->site_favicon)
-        <link rel="icon" type="image/png" href="{{ Storage::url($settings->site_favicon) }}">
+    @if($appSetting->site_favicon)
+        <link rel="icon" type="image/png" href="{{ asset($appSetting->site_favicon) }}">
     @endif
     
     <!-- Bootstrap CSS -->
@@ -31,7 +31,7 @@
             --dark-bg: #0d1117;
             --card-bg: #161b22;
             --text-light: #f0f6fc;
-            --text-muted: #8b949e;
+            --text-unmute: #8b949e;
             --border-color: #30363d;
         }
         
@@ -238,9 +238,9 @@
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
                     @if($settings->site_logo)
-                        <img src="{{ Storage::url($settings->site_logo) }}" alt="{{ $settings->site_name }}" height="40" class="me-2">
+                        <img src="{{ asset($settings->site_logo) }}" alt="{{ $settings->site_name }}" height="40" class="me-2">
                     @endif
-                    <span class="text-gold fw-bold">{{ $settings->site_name }}</span>
+                    {{-- <span class="text-gold fw-bold">{{ $settings->site_name }}</span> --}}
                 </a>
                 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -330,8 +330,9 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-4 mb-4">
-                        <h5 class="text-gold mb-3">{{ $settings->site_name }}</h5>
-                        <p class="text-muted">{{ $settings->site_description }}</p>
+                        <img src="{{ asset($appSetting->site_logo) }}" alt="">
+                        {{-- <h5 class="text-gold mb-3">{{ $settings->site_name }}</h5> --}}
+                        <p class="text-unmute">{{ $settings->site_description }}</p>
                         <div class="d-flex gap-3">
                             <a href="#" class="text-gold"><i class="fab fa-facebook-f"></i></a>
                             <a href="#" class="text-gold"><i class="fab fa-twitter"></i></a>
@@ -342,16 +343,16 @@
                     <div class="col-lg-2 col-md-6 mb-4">
                         <h6 class="text-gold mb-3">Quick Links</h6>
                         <ul class="list-unstyled">
-                            <li><a href="{{ route('home') }}" class="text-muted text-decoration-none">Home</a></li>
-                            <li><a href="{{ route('about') }}" class="text-muted text-decoration-none">About</a></li>
-                            <li><a href="{{ route('services') }}" class="text-muted text-decoration-none">Services</a></li>
-                            <li><a href="{{ route('celebrities') }}" class="text-muted text-decoration-none">Celebrities</a></li>
-                            <li><a href="{{ route('contact') }}" class="text-muted text-decoration-none">Contact</a></li>
+                            <li><a href="{{ route('home') }}" class="text-white text-decoration-none">Home</a></li>
+                            <li><a href="{{ route('about') }}" class="text-white text-decoration-none">About</a></li>
+                            <li><a href="{{ route('services') }}" class="text-white text-decoration-none">Services</a></li>
+                            <li><a href="{{ route('celebrities') }}" class="text-white text-decoration-none">Celebrities</a></li>
+                            <li><a href="{{ route('contact') }}" class="text-white text-decoration-none">Contact</a></li>
                         </ul>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-4">
                         <h6 class="text-gold mb-3">Contact Info</h6>
-                        <ul class="list-unstyled text-muted">
+                        <ul class="list-unstyled text-unmute">
                             <li><i class="fas fa-envelope me-2 text-gold"></i> {{ $settings->site_email }}</li>
                             <li><i class="fas fa-phone me-2 text-gold"></i> {{ $settings->site_phone }}</li>
                             <li><i class="fas fa-map-marker-alt me-2 text-gold"></i> {{ $settings->site_address }}</li>
@@ -359,7 +360,7 @@
                     </div>
                     <div class="col-lg-3 mb-4">
                         <h6 class="text-gold mb-3">Newsletter</h6>
-                        <p class="text-muted small">Subscribe to get updates on new celebrities and exclusive events.</p>
+                        <p class="text-unmute small">Subscribe to get updates on new celebrities and exclusive events.</p>
                         <form id="newsletter-form">
                             @csrf
                             <div class="input-group">
@@ -375,11 +376,9 @@
                 <hr class="my-4" style="border-color: var(--border-color);">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <p class="text-muted mb-0">&copy; {{ date('Y') }} {{ $settings->site_name }}. All rights reserved.</p>
+                        <p class="text-unmute mb-0">&copy; {{ date('Y') }} {{ $settings->site_name }}. All rights reserved.</p>
                     </div>
-                    <div class="col-md-6 text-md-end">
-                        <p class="text-muted mb-0">Powered by MiniMax Agent</p>
-                    </div>
+                    
                 </div>
             </div>
         </footer>

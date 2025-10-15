@@ -40,7 +40,7 @@
                             <td>#{{ $celebrity->id }}</td>
                             <td>
                                 @if($celebrity->image)
-                                    <img src="{{ asset('storage/' . $celebrity->image) }}" 
+                                    <img src="{{ asset( $celebrity->image) }}" 
                                          alt="{{ $celebrity->name }}" 
                                          class="rounded-circle" 
                                          width="50" 

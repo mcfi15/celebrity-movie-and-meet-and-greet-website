@@ -11,6 +11,10 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+     @if($appSetting->site_favicon)
+        <link rel="icon" type="image/png" href="{{ asset($appSetting->site_favicon) }}">
+    @endif
     
     <!-- Custom Admin Styles -->
     <style>
@@ -265,10 +269,11 @@
             <nav class="col-md-3 col-lg-2 d-md-block sidebar" id="sidebarMenu">
                 <div class="position-sticky pt-3">
                     <div class="text-center mb-4">
-                        <h4 class="logo-brand">
+                        <img src="{{ asset($appSetting->site_logo) }}" alt="" width="100px" height="40px">
+                        {{-- <h4 class="logo-brand">
                             <i class="fas fa-star"></i>
                             Celebrity Agency
-                        </h4>
+                        </h4> --}}
                         <p class="text-muted small">Admin Panel</p>
                     </div>
                     
@@ -289,6 +294,12 @@
                             <a class="nav-link {{ request()->routeIs('admin.service-types.*') ? 'active' : '' }}" href="{{ route('admin.service-types.index') }}">
                                 <i class="fas fa-list"></i>
                                 Service Types
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.payment-methods.*') ? 'active' : '' }}" href="{{ route('admin.payment-methods.index') }}">
+                                <i class="fas fa-credit-card"></i>
+                                Payment Methods
                             </a>
                         </li>
                         <li class="nav-item">

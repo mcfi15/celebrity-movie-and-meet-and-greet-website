@@ -147,7 +147,7 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card celebrity-card bg-card h-100">
                     @if($celebrity->image)
-                        <img src="{{ Storage::url($celebrity->image) }}" 
+                        <img src="{{ asset($celebrity->image) }}" 
                              class="card-img-top celebrity-img" 
                              alt="{{ $celebrity->name }}">
                     @else

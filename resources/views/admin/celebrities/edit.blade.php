@@ -124,7 +124,7 @@
                                id="image" 
                                name="image" 
                                accept="image/*">
-                        <div class="form-text">Leave empty to keep current image. Upload a new image to replace it.</div>
+                        <div class="form-text text-white">Leave empty to keep current image. Upload a new image to replace it.</div>
                         @error('image')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -138,7 +138,7 @@
                                    name="is_available" 
                                    value="1" 
                                    {{ old('is_available', $celebrity->is_available) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="is_available">
+                            <label class="form-check-label text-white" for="is_available">
                                 Available for Booking
                             </label>
                         </div>
@@ -195,7 +195,7 @@
                     </h6>
                 </div>
                 <div class="card-body text-center">
-                    <img src="{{ asset('storage/' . $celebrity->image) }}" 
+                    <img src="{{ asset($celebrity->image) }}" 
                          alt="{{ $celebrity->name }}" 
                          class="img-fluid rounded" 
                          style="max-height: 200px;">

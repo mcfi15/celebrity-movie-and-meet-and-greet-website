@@ -37,6 +37,8 @@ class SiteSettingController extends Controller
             'stripe_enabled' => $siteSetting->stripe_enabled ?? false,
             'crypto_enabled' => $siteSetting->crypto_enabled ?? false,
             'bank_transfer_enabled' => $siteSetting->bank_transfer_enabled ?? false,
+            'paypal_enabled' => $siteSetting->paypal_enabled ?? false,
+            'cash_enabled' => $siteSetting->cash_enabled ?? false,
             'site_logo' => $siteSetting->site_logo,
         ];
 
@@ -65,6 +67,8 @@ class SiteSettingController extends Controller
             'stripe_enabled' => 'nullable|boolean',
             'crypto_enabled' => 'nullable|boolean',
             'bank_transfer_enabled' => 'nullable|boolean',
+            'paypal_enabled' => 'nullable|boolean',
+            'cash_enabled' => 'nullable|boolean',
         ]);
 
         $siteSetting = SiteSetting::getSetting();
@@ -81,6 +85,8 @@ class SiteSettingController extends Controller
             'stripe_enabled' => $request->has('stripe_enabled'),
             'crypto_enabled' => $request->has('crypto_enabled'),
             'bank_transfer_enabled' => $request->has('bank_transfer_enabled'),
+            'paypal_enabled' => $request->has('paypal_enabled'),
+            'cash_enabled' => $request->has('cash_enabled'),
         ];
 
         if($request->hasFile('site_logo')){
@@ -93,18 +99,43 @@ class SiteSettingController extends Controller
             $ext = $file->getClientOriginalExtension();
             $filename = time().'.'.$ext;
 
-            $file->move('uploads/settings/',$filename);
-            $updateData['site_logo'] = "uploads/settings/$filename";
+            $file->move('uploads/logo/',$filename);
+            $updateData['site_logo'] = "uploads/logo/$filename";
         }
 
-        // // Handle logo upload
-        // if ($request->hasFile('site_logo')) {
-        //     if ($siteSetting->site_logo) {
-        //         Storage::disk('public')->delete($siteSetting->site_logo);
-        //     }
-        //     $logoPath = $this->uploadImage($request->file('site_logo'), 'settings', 300, 100);
-        //     $updateData['site_logo'] = $logoPath;
-        // }
+        if($request->hasFile('site_favicon')){
+ 
+            $path = $siteSetting->site_favicon;
+            if(File::exists($path)){
+                File::delete($path);
+            }
+            $file = $request->file('site_favicon');
+            $ext = $file->getClientOriginalExtension();
+            $filename = time().'.'.$ext;
+
+            $file->move('uploads/favicon/',$filename);
+            $updateData['site_favicon'] = "uploads/favicon/$filename";
+        }
+
+        // Build payment methods array based on enabled options
+        $paymentMethods = [];
+        if ($request->has('stripe_enabled')) {
+            $paymentMethods[] = 'stripe';
+        }
+        if ($request->has('crypto_enabled')) {
+            $paymentMethods[] = 'crypto';
+        }
+        if ($request->has('bank_transfer_enabled')) {
+            $paymentMethods[] = 'bank_transfer';
+        }
+        if ($request->has('paypal_enabled')) {
+            $paymentMethods[] = 'paypal';
+        }
+        if ($request->has('cash_enabled')) {
+            $paymentMethods[] = 'cash';
+        }
+        
+        $updateData['payment_methods'] = $paymentMethods;
 
         // Update the settings
         $siteSetting->update($updateData);

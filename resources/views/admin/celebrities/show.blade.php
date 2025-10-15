@@ -51,7 +51,7 @@
                 <p class="text-white mb-3">{{ $celebrity->profession }}</p>
                 
                 <div class="mb-3">
-                    @if($celebrity->is_available)
+                    @if($celebrity->is_active)
                         <span class="badge bg-success fs-6">
                             <i class="fas fa-check-circle me-1"></i>
                             Available
@@ -94,8 +94,8 @@
                     <form action="{{ route('admin.celebrities.toggle-availability', $celebrity) }}" method="POST" class="d-inline">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn {{ $celebrity->is_available ? 'btn-danger' : 'btn-success' }} w-100">
-                            @if($celebrity->is_available)
+                        <button type="submit" class="btn {{ $celebrity->is_active ? 'btn-danger' : 'btn-success' }} w-100">
+                            @if($celebrity->is_active)
                                 <i class="fas fa-times me-2"></i>
                                 Mark Unavailable
                             @else
