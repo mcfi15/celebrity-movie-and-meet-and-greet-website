@@ -40,6 +40,7 @@ class SiteSettingController extends Controller
             'paypal_enabled' => $siteSetting->paypal_enabled ?? false,
             'cash_enabled' => $siteSetting->cash_enabled ?? false,
             'site_logo' => $siteSetting->site_logo,
+            'site_favicon' => $siteSetting->site_favicon,
         ];
 
         // Statistics for the sidebar
@@ -63,6 +64,7 @@ class SiteSettingController extends Controller
             'contact_phone' => 'nullable|string|max:20',
             'contact_address' => 'nullable|string',
             'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'site_favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'payment_enabled' => 'nullable|boolean',
             'stripe_enabled' => 'nullable|boolean',
             'crypto_enabled' => 'nullable|boolean',

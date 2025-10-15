@@ -112,8 +112,21 @@
                                id="site_logo" 
                                name="site_logo" 
                                accept="image/*">
-                        <div class="form-text">Upload a new logo to replace the current one. Recommended size: 200x50px</div>
+                        <div class="form-text text-white">Upload a new logo to replace the current one. Recommended size: 200x50px</div>
                         @error('site_logo')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="site_favicon" class="form-label">Site Favicon</label>
+                        <input type="file" 
+                               class="form-control @error('site_favicon') is-invalid @enderror" 
+                               id="site_favicon" 
+                               name="site_favicon" 
+                               accept="image/*">
+                        <div class="form-text text-white">Upload a new favicon to replace the current one. Recommended size: 200x50px</div>
+                        @error('site_favicon')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -232,6 +245,25 @@
                     <div class="card-body text-center">
                         <img src="{{ asset($settings['site_logo']) }}" 
                              alt="Site Logo" 
+                             class="img-fluid" 
+                             style="max-height: 100px;">
+                    </div>
+                </div>
+            @endif
+
+            <br>
+        
+            @if(isset($settings['site_favicon']) && $settings['site_favicon'])
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-image me-2"></i>
+                            Current Favicon
+                        </h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="{{ asset($settings['site_favicon']) }}" 
+                             alt="Site Favicon" 
                              class="img-fluid" 
                              style="max-height: 100px;">
                     </div>
