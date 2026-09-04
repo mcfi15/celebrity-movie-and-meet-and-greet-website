@@ -41,6 +41,8 @@ class SiteSettingController extends Controller
             'cash_enabled' => $siteSetting->cash_enabled ?? false,
             'site_logo' => $siteSetting->site_logo,
             'site_favicon' => $siteSetting->site_favicon,
+            'passcode_enabled' => $siteSetting->passcode_enabled ?? false,
+            'passcode_set' => !empty($siteSetting->site_passcode),
         ];
 
         // Statistics for the sidebar
@@ -71,6 +73,8 @@ class SiteSettingController extends Controller
             'bank_transfer_enabled' => 'nullable|boolean',
             'paypal_enabled' => 'nullable|boolean',
             'cash_enabled' => 'nullable|boolean',
+            'passcode_enabled' => 'nullable|boolean',
+            'site_passcode' => 'nullable|string|min:4|max:64',
         ]);
 
         $siteSetting = SiteSetting::getSetting();
@@ -89,7 +93,13 @@ class SiteSettingController extends Controller
             'bank_transfer_enabled' => $request->has('bank_transfer_enabled'),
             'paypal_enabled' => $request->has('paypal_enabled'),
             'cash_enabled' => $request->has('cash_enabled'),
+            'passcode_enabled' => $request->has('passcode_enabled'),
         ];
+
+        // Hash the passcode only when the admin provides a new one.
+        if ($request->filled('site_passcode')) {
+            $updateData['site_passcode'] = \Illuminate\Support\Facades\Hash::make($request->site_passcode);
+        }
 
         if($request->hasFile('site_logo')){
  

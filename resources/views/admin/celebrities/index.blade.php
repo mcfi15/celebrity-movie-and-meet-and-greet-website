@@ -61,7 +61,7 @@
                             <td>{{ $celebrity->category }}</td>
                             <td>${{ number_format($celebrity->hourly_rate, 2) }}</td>
                             <td>
-                                @if($celebrity->is_available)
+                                @if($celebrity->is_active)
                                     <span class="badge bg-success">Available</span>
                                 @else
                                     <span class="badge bg-danger">Unavailable</span>

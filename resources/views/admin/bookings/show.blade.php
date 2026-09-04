@@ -49,6 +49,8 @@
                         <h2 class="mb-1">
                             @if($booking->status === 'pending')
                                 <span class="badge bg-warning fs-4">Pending Review</span>
+                            @elseif($booking->status === 'pending_payment_verification')
+                                <span class="badge bg-info fs-4">Awaiting Payment Verification</span>
                             @elseif($booking->status === 'approved')
                                 <span class="badge bg-success fs-4">Approved</span>
                             @else
@@ -62,6 +64,8 @@
                             @if($booking->payment_required)
                                 @if($booking->payment_status === 'paid')
                                     <span class="badge bg-success fs-4">Paid</span>
+                                @elseif($booking->payment_status === 'pending_verification')
+                                    <span class="badge bg-info fs-4">Pending Verification</span>
                                 @elseif($booking->payment_status === 'pending')
                                     <span class="badge bg-warning fs-4">Pending</span>
                                 @else
@@ -275,6 +279,135 @@
         @endif
     </div>
 </div>
+
+<!-- Crypto Payment Verification -->
+@if($booking->cryptoWallet)
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-wallet me-2"></i>
+                        Crypto Payment Verification
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-info mb-3">Wallet Details</h6>
+                            <div class="d-flex align-items-center mb-3">
+                                @if($booking->cryptoWallet->wallet_image)
+                                    <img src="{{ $booking->cryptoWallet->wallet_image_url }}"
+                                         alt="{{ $booking->cryptoWallet->name }}"
+                                         class="me-3 rounded bg-white" style="height: 48px; width: 48px; object-fit: contain;">
+                                @else
+                                    <i class="fas fa-coins fa-2x text-warning me-3"></i>
+                                @endif
+                                <div>
+                                    <strong class="text-white">{{ $booking->cryptoWallet->name }}</strong><br>
+                                    <small class="text-muted">${{ number_format($booking->total_amount ?? 0, 2) }} expected</small>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 text-white"><strong>Address:</strong></div>
+                                <div class="col-sm-8">
+                                    <code class="text-info" style="word-break: break-all;">{{ $booking->cryptoWallet->wallet_address }}</code>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 text-white"><strong>TX Hash:</strong></div>
+                                <div class="col-sm-8">
+                                    @if($booking->payment_tx_hash)
+                                        <code class="text-warning" style="word-break: break-all;">{{ $booking->payment_tx_hash }}</code>
+                                    @else
+                                        <span class="text-muted">Not submitted</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 text-white"><strong>Submitted:</strong></div>
+                                <div class="col-sm-8 text-white">
+                                    @if($booking->payment_submitted_at)
+                                        {{ $booking->payment_submitted_at->format('M d, Y h:i A') }}
+                                    @else
+                                        <span class="text-muted">—</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 text-white"><strong>Reviewed:</strong></div>
+                                <div class="col-sm-8 text-white">
+                                    @if($booking->payment_reviewed_at)
+                                        {{ $booking->payment_reviewed_at->format('M d, Y h:i A') }}
+                                    @else
+                                        <span class="text-muted">—</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-info mb-3">Payment Proof</h6>
+                            @if($booking->payment_proof_image)
+                                <div class="text-center mb-3">
+                                    <a href="{{ $booking->payment_proof_image_url }}" target="_blank">
+                                        <img src="{{ $booking->payment_proof_image_url }}" alt="Payment proof"
+                                             class="rounded border" style="max-height: 220px; max-width: 100%;">
+                                    </a>
+                                    <p class="text-muted small mt-1">
+                                        <i class="fas fa-external-link-alt me-1"></i>Click to view full size
+                                    </p>
+                                </div>
+                            @else
+                                <p class="text-muted text-center py-4">
+                                    <i class="fas fa-image fa-2x mb-2"></i><br>
+                                    No receipt image was uploaded.
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+
+                    @if($booking->payment_notes)
+                        <div class="alert alert-warning mb-0 mt-3">
+                            <i class="fas fa-sticky-note me-2"></i>
+                            <strong>Payment Notes:</strong> {{ $booking->payment_notes }}
+                        </div>
+                    @endif
+
+                    @if($booking->status === 'pending_payment_verification')
+                        <hr class="border-secondary">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <form action="{{ route('admin.bookings.reject-payment', $booking) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <div class="mb-2">
+                                        <label for="reject_payment_notes" class="form-label">Rejection Notes (required if rejecting)</label>
+                                        <input type="text" class="form-control" id="reject_payment_notes"
+                                               name="admin_notes" placeholder="e.g., Transaction not found on blockchain">
+                                    </div>
+                                    <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Reject this payment and decline the booking? The customer will be notified.')">
+                                        <i class="fas fa-times me-2"></i> Reject Payment & Decline Booking
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <form action="{{ route('admin.bookings.approve-payment', $booking) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-success btn-lg"
+                                            onclick="return confirm('Verify this payment and approve the booking? The customer will be notified.')">
+                                        <i class="fas fa-check me-2"></i> Verify & Approve
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
 
 <!-- Admin Actions -->
 @if($booking->status === 'pending')

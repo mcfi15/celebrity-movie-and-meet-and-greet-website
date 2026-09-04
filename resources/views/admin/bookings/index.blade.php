@@ -13,6 +13,7 @@
                 <select class="form-select" id="status" name="status">
                     <option value="">All Statuses</option>
                     <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="pending_payment_verification" {{ request('status') === 'pending_payment_verification' ? 'selected' : '' }}>Pending Payment Verification</option>
                     <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
                     <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
                 </select>
@@ -86,10 +87,10 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h5 class="card-title text-info">{{ $approvedBookings }}</h5>
-                        <p class="card-text text-white">Approved</p>
+                        <h5 class="card-title text-info">{{ $pendingVerificationBookings }}</h5>
+                        <p class="card-text text-white">Awaiting Payment Verification</p>
                     </div>
-                    <i class="fas fa-check-circle fa-2x text-info"></i>
+                    <i class="fas fa-wallet fa-2x text-info"></i>
                 </div>
             </div>
         </div>
@@ -99,10 +100,10 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h5 class="card-title text-danger">{{ $rejectedBookings }}</h5>
-                        <p class="card-text text-white">Rejected</p>
+                        <h5 class="card-title text-danger">{{ $approvedBookings }}</h5>
+                        <p class="card-text text-white">Approved</p>
                     </div>
-                    <i class="fas fa-times-circle fa-2x text-danger"></i>
+                    <i class="fas fa-check-circle fa-2x text-danger"></i>
                 </div>
             </div>
         </div>
@@ -191,6 +192,8 @@
                             <td>
                                 @if($booking->status === 'pending')
                                     <span class="badge bg-warning">Pending</span>
+                                @elseif($booking->status === 'pending_payment_verification')
+                                    <span class="badge bg-info">Awaiting Verification</span>
                                 @elseif($booking->status === 'approved')
                                     <span class="badge bg-success">Approved</span>
                                 @else
@@ -201,6 +204,8 @@
                                 @if($booking->payment_required)
                                     @if($booking->payment_status === 'paid')
                                         <span class="badge bg-success">Paid</span>
+                                    @elseif($booking->payment_status === 'pending_verification')
+                                        <span class="badge bg-info">Pending Verification</span>
                                     @elseif($booking->payment_status === 'pending')
                                         <span class="badge bg-warning">Pending</span>
                                     @else
@@ -249,6 +254,31 @@
                                                     title="Reject" 
                                                     onclick="return confirm('Are you sure you want to reject this booking?')">
                                                 <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    @elseif($booking->status === 'pending_payment_verification')
+                                        <form action="{{ route('admin.bookings.approve-payment', $booking) }}" 
+                                              method="POST" 
+                                              class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" 
+                                                    class="btn btn-sm btn-success" 
+                                                    title="Verify Payment & Approve"
+                                                    onclick="return confirm('Verify this payment and approve the booking?')">
+                                                <i class="fas fa-check-double"></i>
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('admin.bookings.reject-payment', $booking) }}" 
+                                              method="POST" 
+                                              class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" 
+                                                    class="btn btn-sm btn-danger" 
+                                                    title="Reject Payment"
+                                                    onclick="return confirm('Reject this payment and decline the booking?')">
+                                                <i class="fas fa-ban"></i>
                                             </button>
                                         </form>
                                     @endif

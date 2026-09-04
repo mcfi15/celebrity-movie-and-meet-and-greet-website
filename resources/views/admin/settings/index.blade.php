@@ -230,6 +230,65 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Site Passcode (Gatekeeper) -->
+            <div class="card mt-4 border-warning">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-lock me-2"></i>
+                        Site Passcode (Gatekeeper)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" 
+                                   type="checkbox" 
+                                   id="passcode_enabled" 
+                                   name="passcode_enabled" 
+                                   value="1" 
+                                   {{ old('passcode_enabled', $settings['passcode_enabled'] ?? false) ? 'checked' : '' }}>
+                            <label class="form-check-label text-white" for="passcode_enabled">
+                                <strong>Enable Site Passcode Protection</strong>
+                                <br><small class="text-muted">
+                                    Visitors will be required to enter the passcode before they can access any page of the website.
+                                </small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-8">
+                            <label for="site_passcode" class="form-label">Site Passcode</label>
+                            <div class="input-group">
+                                <input type="password" 
+                                       class="form-control @error('site_passcode') is-invalid @enderror" 
+                                       id="site_passcode" 
+                                       name="site_passcode" 
+                                       placeholder="{{ ($settings['passcode_set'] ?? false) ? '•••••• - leave blank to keep current' : 'Enter a new passcode' }}">
+                                <button type="button" class="btn btn-warning" id="generate-passcode" title="Generate a random passcode">
+                                    <i class="fas fa-shield-alt me-1"></i> Generate
+                                </button>
+                            </div>
+                            <div class="form-text text-white">
+                                @if($settings['passcode_set'] ?? false)
+                                    <i class="fas fa-check-circle text-success me-1"></i>A passcode is currently set. Leave blank to keep it.
+                                @else
+                                    <i class="fas fa-exclamation-circle text-warning me-1"></i>No passcode is set yet. The site stays open until one is configured.
+                                @endif
+                            </div>
+                            @error('site_passcode')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-outline-secondary w-100" id="toggle-passcode-visibility">
+                                <i class="fas fa-eye me-1"></i> Show / Hide
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Current Logo & Quick Stats -->
@@ -315,3 +374,39 @@
     </div>
 </form>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var passcodeInput = document.getElementById('site_passcode');
+    var generateBtn = document.getElementById('generate-passcode');
+    var toggleBtn = document.getElementById('toggle-passcode-visibility');
+
+    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+
+    function randomPasscode(length) {
+        var result = '';
+        var array = new Uint32Array(length);
+        (window.crypto || window.msCrypto).getRandomValues(array);
+        for (var i = 0; i < length; i++) {
+            result += chars.charAt(array[i] % chars.length);
+        }
+        return result;
+    }
+
+    if (generateBtn) {
+        generateBtn.addEventListener('click', function() {
+            passcodeInput.type = 'text';
+            passcodeInput.value = randomPasscode(10);
+            passcodeInput.focus();
+        });
+    }
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            passcodeInput.type = passcodeInput.type === 'password' ? 'text' : 'password';
+        });
+    }
+});
+</script>
+@endpush

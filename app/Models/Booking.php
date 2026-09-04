@@ -31,6 +31,12 @@ class Booking extends Model
         'payment_status',
         'payment_method',
         'payment_reference',
+        'crypto_wallet_id',
+        'payment_tx_hash',
+        'payment_proof_image',
+        'payment_notes',
+        'payment_submitted_at',
+        'payment_reviewed_at',
         'special_requests',
         'admin_notes',
         'approved_at',
@@ -43,6 +49,8 @@ class Booking extends Model
         'base_price' => 'decimal:2',
         'additional_charges' => 'decimal:2',
         'total_amount' => 'decimal:2',
+        'payment_submitted_at' => 'datetime',
+        'payment_reviewed_at' => 'datetime',
         'approved_at' => 'datetime',
         'rejected_at' => 'datetime',
     ];
@@ -78,6 +86,16 @@ class Booking extends Model
         return $this->belongsTo(PaymentMethod::class, 'payment_method', 'slug');
     }
 
+    public function cryptoWallet()
+    {
+        return $this->belongsTo(CryptoWallet::class);
+    }
+
+    public function getPaymentProofImageUrlAttribute()
+    {
+        return $this->payment_proof_image ? asset('storage/' . $this->payment_proof_image) : null;
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', 'pending');
@@ -92,6 +110,7 @@ class Booking extends Model
     {
         return match($this->status) {
             'pending' => 'warning',
+            'pending_payment_verification' => 'info',
             'approved' => 'success',
             'rejected' => 'danger',
             'completed' => 'info',
@@ -104,6 +123,7 @@ class Booking extends Model
     {
         return match($this->payment_status) {
             'pending' => 'warning',
+            'pending_verification' => 'info',
             'paid' => 'success',
             'failed' => 'danger',
             'refunded' => 'info',

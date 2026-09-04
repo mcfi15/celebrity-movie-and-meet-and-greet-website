@@ -32,6 +32,8 @@ class SiteSetting extends Model
         'paypal_client_id',
         'paypal_client_secret',
         'theme_color',
+        'site_passcode',
+        'passcode_enabled',
     ];
 
     protected $casts = [
@@ -41,6 +43,7 @@ class SiteSetting extends Model
         'bank_transfer_enabled' => 'boolean',
         'paypal_enabled' => 'boolean',
         'cash_enabled' => 'boolean',
+        'passcode_enabled' => 'boolean',
         'payment_methods' => 'array',
     ];
 

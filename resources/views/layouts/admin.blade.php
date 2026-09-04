@@ -303,6 +303,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.crypto-wallets.*') ? 'active' : '' }}" href="{{ route('admin.crypto-wallets.index') }}">
+                                <i class="fas fa-wallet"></i>
+                                Crypto Wallets
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}" href="{{ route('admin.sliders.index') }}">
                                 <i class="fas fa-sliders-h"></i>
                                 Home Sliders

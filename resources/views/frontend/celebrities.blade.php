@@ -78,7 +78,7 @@
                         <div class="card bg-card h-100 celebrity-card">
                             <div class="position-relative">
                                 @if($celebrity->image)
-                                    <img src="{{ Storage::url($celebrity->image) }}" 
+                                    <img src="{{ asset($celebrity->image) }}" 
                                          class="card-img-top celebrity-image" 
                                          alt="{{ $celebrity->name }}"
                                          style="height: 300px; object-fit: cover;">

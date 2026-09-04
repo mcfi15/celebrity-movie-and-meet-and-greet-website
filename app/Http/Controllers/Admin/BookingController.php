@@ -20,7 +20,7 @@ class BookingController extends Controller
 
     public function index(Request $request)
     {
-        $query = Booking::with(['celebrity', 'serviceType'])
+        $query = Booking::with(['celebrity', 'serviceType', 'cryptoWallet'])
             ->orderBy('created_at', 'desc');
 
         // Apply filters
@@ -52,6 +52,7 @@ class BookingController extends Controller
         // Stats for cards
         $totalBookings = Booking::count();
         $pendingBookings = Booking::where('status', 'pending')->count();
+        $pendingVerificationBookings = Booking::where('status', 'pending_payment_verification')->count();
         $approvedBookings = Booking::where('status', 'approved')->count();
         $rejectedBookings = Booking::where('status', 'rejected')->count();
 
@@ -62,7 +63,8 @@ class BookingController extends Controller
         return view('admin.bookings.index', compact(
             'bookings',
             'totalBookings',
-            'pendingBookings', 
+            'pendingBookings',
+            'pendingVerificationBookings',
             'approvedBookings',
             'rejectedBookings',
             'celebrities',
@@ -108,7 +110,7 @@ class BookingController extends Controller
 
     public function show(Booking $booking)
     {
-        $booking->load(['celebrity', 'serviceType', 'user']);
+        $booking->load(['celebrity', 'serviceType', 'cryptoWallet', 'user']);
         return view('admin.bookings.show', compact('booking'));
     }
 
@@ -199,6 +201,52 @@ class BookingController extends Controller
         $booking->update($request->only(['status', 'payment_status', 'admin_notes']));
 
         return back()->with('success', 'Booking status has been updated.');
+    }
+
+    public function approvePayment(Request $request, Booking $booking)
+    {
+        $request->validate([
+            'admin_notes' => 'nullable|string|max:1000',
+        ]);
+
+        $booking->update([
+            'status' => 'approved',
+            'payment_status' => 'paid',
+            'payment_reviewed_at' => now(),
+            'admin_notes' => $request->admin_notes ?? $booking->admin_notes,
+            'approved_at' => now(),
+        ]);
+
+        try {
+            Mail::to($booking->customer_email)->send(new BookingApproved($booking));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send booking approval email: ' . $e->getMessage());
+        }
+
+        return back()->with('success', 'Payment verified and booking approved. Customer has been notified.');
+    }
+
+    public function rejectPayment(Request $request, Booking $booking)
+    {
+        $request->validate([
+            'admin_notes' => 'required|string|max:1000',
+        ]);
+
+        $booking->update([
+            'status' => 'rejected',
+            'payment_status' => 'failed',
+            'payment_reviewed_at' => now(),
+            'admin_notes' => $request->admin_notes,
+            'rejected_at' => now(),
+        ]);
+
+        try {
+            Mail::to($booking->customer_email)->send(new BookingRejected($booking));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send booking rejection email: ' . $e->getMessage());
+        }
+
+        return back()->with('success', 'Payment rejected and booking declined. Customer has been notified.');
     }
 
     public function destroy(Booking $booking)

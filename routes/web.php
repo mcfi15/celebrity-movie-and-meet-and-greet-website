@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PasscodeController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CelebrityController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\CryptoWalletController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,33 +24,40 @@ use App\Http\Controllers\Admin\TestimonialController;
 |--------------------------------------------------------------------------
 */
 
-// Frontend Routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/about', [HomeController::class, 'about'])->name('about');
-Route::get('/services', [HomeController::class, 'services'])->name('services');
-Route::get('/celebrities', [HomeController::class, 'celebrities'])->name('celebrities');
-Route::get('/celebrity/{celebrity}', [HomeController::class, 'celebrity'])->name('celebrity.show');
+// Passcode Gatekeeper (no passcode middleware - must stay reachable)
+Route::get('/passcode-entry', [PasscodeController::class, 'showEntryForm'])->name('passcode.entry');
+Route::post('/passcode-entry', [PasscodeController::class, 'verify'])->name('passcode.verify');
 
-// Contact Routes
-Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-Route::post('/newsletter/subscribe', [ContactController::class, 'subscribe'])->name('newsletter.subscribe');
-Route::get('/newsletter/unsubscribe/{email}', [ContactController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
+// Frontend Routes (protected by the site-wide passcode gatekeeper)
+Route::middleware('passcode')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/about', [HomeController::class, 'about'])->name('about');
+    Route::get('/services', [HomeController::class, 'services'])->name('services');
+    Route::get('/celebrities', [HomeController::class, 'celebrities'])->name('celebrities');
+    Route::get('/celebrity/{celebrity}', [HomeController::class, 'celebrity'])->name('celebrity.show');
 
-// Booking Routes
-Route::get('/book-celebrity', [BookingController::class, 'create'])->name('booking.create');
-Route::post('/book-celebrity', [BookingController::class, 'store'])->name('booking.store');
-Route::get('/booking/success/{bookingNumber}', [BookingController::class, 'success'])->name('booking.success');
-Route::get('/api/service-price', [BookingController::class, 'getServicePrice'])->name('api.service-price');
+    // Contact Routes
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+    Route::post('/newsletter/subscribe', [ContactController::class, 'subscribe'])->name('newsletter.subscribe');
+    Route::get('/newsletter/unsubscribe/{email}', [ContactController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
-// Authentication Routes
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
-Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    // Booking Routes
+    Route::get('/book-celebrity', [BookingController::class, 'create'])->name('booking.create');
+    Route::post('/book-celebrity', [BookingController::class, 'store'])->name('booking.store');
+    Route::get('/booking/success/{bookingNumber}', [BookingController::class, 'success'])->name('booking.success');
+    Route::post('/booking/{booking}/payment', [BookingController::class, 'submitPaymentProof'])->name('booking.payment.submit');
+    Route::get('/api/service-price', [BookingController::class, 'getServicePrice'])->name('api.service-price');
+
+    // Authentication Routes
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
@@ -66,6 +75,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('bookings/{booking}/reject', [AdminBookingController::class, 'reject'])->name('bookings.reject');
     Route::patch('bookings/{booking}/approve', [AdminBookingController::class, 'approve'])->name('bookings.approve');
     Route::patch('bookings/{booking}/reject', [AdminBookingController::class, 'reject'])->name('bookings.reject');
+    Route::post('bookings/{booking}/approve-payment', [AdminBookingController::class, 'approvePayment'])->name('bookings.approve-payment');
+    Route::post('bookings/{booking}/reject-payment', [AdminBookingController::class, 'rejectPayment'])->name('bookings.reject-payment');
+    Route::patch('bookings/{booking}/approve-payment', [AdminBookingController::class, 'approvePayment'])->name('bookings.approve-payment');
+    Route::patch('bookings/{booking}/reject-payment', [AdminBookingController::class, 'rejectPayment'])->name('bookings.reject-payment');
     
     // Celebrities Management
     Route::resource('celebrities', CelebrityController::class);
@@ -112,6 +125,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('payment-methods', PaymentMethodController::class);
     Route::post('payment-methods/update-order', [PaymentMethodController::class, 'updateOrder'])->name('payment-methods.update-order');
     Route::post('payment-methods/{paymentMethod}/toggle-status', [PaymentMethodController::class, 'toggleStatus'])->name('payment-methods.toggle-status');
+
+    // Crypto Wallets Management
+    Route::resource('crypto-wallets', CryptoWalletController::class);
+    Route::post('crypto-wallets/update-order', [CryptoWalletController::class, 'updateOrder'])->name('crypto-wallets.update-order');
+    Route::post('crypto-wallets/{cryptoWallet}/toggle-status', [CryptoWalletController::class, 'toggleStatus'])->name('crypto-wallets.toggle-status');
 });
 
 // Redirect admin routes without trailing slash

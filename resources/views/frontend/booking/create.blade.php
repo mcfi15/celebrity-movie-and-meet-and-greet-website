@@ -11,7 +11,7 @@
                     <h2 class="mb-0 text-gold">
                         <i class="fas fa-calendar-plus me-2"></i> Book Celebrity Experience
                     </h2>
-                    <p class="text-muted mb-0">Fill out the form below to request a celebrity booking</p>
+                    <p class="text-white mb-0">Fill out the form below to request a celebrity booking</p>
                 </div>
                 <div class="card-body">
                     @if($errors->any())
@@ -133,60 +133,114 @@
                                       placeholder="Any special requests or questions for the celebrity...">{{ old('customer_message') }}</textarea>
                         </div>
 
-                        @if($paymentMethods->count() > 0)
+                        @if($paymentEnabled && $paymentMethods->count() > 0)
                         <!-- Payment Method -->
                         <h5 class="text-gold mb-3">Payment Method</h5>
                         <div class="mb-4">
                             @foreach($paymentMethods as $paymentMethod)
-                                <div class="form-check mb-3 payment-method-option" data-method="{{ $paymentMethod->slug }}">
-                                    <input class="form-check-input payment-method-radio" 
-                                           type="radio" 
-                                           name="payment_method" 
-                                           id="payment_{{ $paymentMethod->slug }}" 
-                                           value="{{ $paymentMethod->slug }}"
-                                           data-min-amount="{{ $paymentMethod->minimum_amount ?? 0 }}"
-                                           data-max-amount="{{ $paymentMethod->maximum_amount ?? 0 }}"
-                                           data-fee-percentage="{{ $paymentMethod->processing_fee_percentage ?? 0 }}"
-                                           data-fee-fixed="{{ $paymentMethod->processing_fee_fixed ?? 0 }}"
-                                           data-instructions="{{ $paymentMethod->instructions ?? '' }}">
-                                    <label class="form-check-label w-100" for="payment_{{ $paymentMethod->slug }}">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div>
-                                                {!! $paymentMethod->icon_html !!}
-                                                <span class="ms-2 fw-bold">{{ $paymentMethod->name }}</span>
-                                                @if($paymentMethod->processing_fee_percentage > 0 || $paymentMethod->processing_fee_fixed > 0)
-                                                    <small class="text-muted ms-2">(Fee: {{ $paymentMethod->formatted_processing_fee }})</small>
+                                @if(str_contains($paymentMethod->slug, 'crypto') && $cryptoWallets->count() > 0)
+                                    {{-- Crypto payments are unified with crypto wallets: each active wallet is a selectable payment option --}}
+                                    @foreach($cryptoWallets as $wallet)
+                                        <div class="form-check mb-3 payment-method-option" data-method="{{ $paymentMethod->slug }}">
+                                            <input class="form-check-input payment-method-radio" 
+                                                   type="radio" 
+                                                   name="payment_method" 
+                                                   id="payment_crypto_{{ $wallet->id }}" 
+                                                   value="{{ $paymentMethod->slug }}"
+                                                   data-crypto-method="1"
+                                                   data-crypto-wallet-id="{{ $wallet->id }}"
+                                                   data-min-amount="{{ $paymentMethod->minimum_amount ?? 0 }}"
+                                                   data-max-amount="{{ $paymentMethod->maximum_amount ?? 0 }}"
+                                                   data-fee-percentage="{{ $paymentMethod->processing_fee_percentage ?? 0 }}"
+                                                   data-fee-fixed="{{ $paymentMethod->processing_fee_fixed ?? 0 }}"
+                                                   {{ (old('payment_method') === $paymentMethod->slug && old('crypto_wallet_id') == $wallet->id) ? 'checked' : '' }}>
+                                            <label class="form-check-label w-100" for="payment_crypto_{{ $wallet->id }}">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="d-flex align-items-center">
+                                                        @if($wallet->wallet_image)
+                                                            <img src="{{ $wallet->wallet_image_url }}" 
+                                                                 alt="{{ $wallet->name }}" class="me-2" 
+                                                                 style="height: 32px; width: 32px; object-fit: contain;">
+                                                        @else
+                                                            <i class="fas fa-coins text-gold me-2 fs-5"></i>
+                                                        @endif
+                                                        <span class="ms-1 fw-bold text-white">{{ $wallet->name }}</span>
+                                                        <small class="text-white ms-2">({{ $paymentMethod->name }})</small>
+                                                    </div>
+                                                    @if($paymentMethod->processing_fee_percentage > 0 || $paymentMethod->processing_fee_fixed > 0)
+                                                        <small class="text-white ms-2">(Fee: {{ $paymentMethod->formatted_processing_fee }})</small>
+                                                    @endif
+                                                </div>
+                                                <div class="mt-1">
+                                                    <small class="text-white">
+                                                        <i class="fas fa-qrcode me-1"></i>
+                                                        <code style="word-break: break-all;">{{ $wallet->wallet_address }}</code>
+                                                    </small>
+                                                </div>
+                                                @if($wallet->instructions)
+                                                    <div class="mt-1">
+                                                        <small class="text-unmute">
+                                                            <i class="fas fa-info-circle me-1"></i>{{ Str::limit($wallet->instructions, 120) }}
+                                                        </small>
+                                                    </div>
+                                                @endif
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="form-check mb-3 payment-method-option" data-method="{{ $paymentMethod->slug }}">
+                                        <input class="form-check-input payment-method-radio" 
+                                               type="radio" 
+                                               name="payment_method" 
+                                               id="payment_{{ $paymentMethod->slug }}" 
+                                               value="{{ $paymentMethod->slug }}"
+                                               data-crypto-method="0"
+                                               data-min-amount="{{ $paymentMethod->minimum_amount ?? 0 }}"
+                                               data-max-amount="{{ $paymentMethod->maximum_amount ?? 0 }}"
+                                               data-fee-percentage="{{ $paymentMethod->processing_fee_percentage ?? 0 }}"
+                                               data-fee-fixed="{{ $paymentMethod->processing_fee_fixed ?? 0 }}"
+                                               data-instructions="{{ $paymentMethod->instructions ?? '' }}">
+                                        <label class="form-check-label w-100" for="payment_{{ $paymentMethod->slug }}">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    {!! $paymentMethod->icon_html !!}
+                                                    <span class="ms-2 fw-bold">{{ $paymentMethod->name }}</span>
+                                                    @if($paymentMethod->processing_fee_percentage > 0 || $paymentMethod->processing_fee_fixed > 0)
+                                                        <small class="text-white ms-2">(Fee: {{ $paymentMethod->formatted_processing_fee }})</small>
+                                                    @endif
+                                                </div>
+                                                @if($paymentMethod->minimum_amount || $paymentMethod->maximum_amount)
+                                                    <small class="text-white">{{ $paymentMethod->amount_limits_text }}</small>
                                                 @endif
                                             </div>
-                                            @if($paymentMethod->minimum_amount || $paymentMethod->maximum_amount)
-                                                <small class="text-muted">{{ $paymentMethod->amount_limits_text }}</small>
+                                            @if($paymentMethod->description)
+                                                <div class="mt-1">
+                                                    <small class="text-white">{{ $paymentMethod->description }}</small>
+                                                </div>
                                             @endif
-                                        </div>
-                                        @if($paymentMethod->description)
-                                            <div class="mt-1">
-                                                <small class="text-muted">{{ $paymentMethod->description }}</small>
+                                        </label>
+                                        @if($paymentMethod->instructions)
+                                            <div class="mt-2 ms-4 payment-instructions" id="instructions_{{ $paymentMethod->slug }}" style="display: none;">
+                                                <div class="alert alert-info py-2 mb-0">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    <strong>Payment Instructions:</strong><br>
+                                                    {{ $paymentMethod->instructions }}
+                                                </div>
                                             </div>
                                         @endif
-                                    </label>
-                                    @if($paymentMethod->instructions)
-                                        <div class="mt-2 ms-4 payment-instructions" id="instructions_{{ $paymentMethod->slug }}" style="display: none;">
-                                            <div class="alert alert-info py-2 mb-0">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                                <strong>Payment Instructions:</strong><br>
-                                                {{ $paymentMethod->instructions }}
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
+                                    </div>
+                                @endif
                             @endforeach
                             
-                            <div class="form-check mb-2">
+                            {{-- <div class="form-check mb-2">
                                 <input class="form-check-input payment-method-radio" type="radio" name="payment_method" id="payment_later" value="" checked>
                                 <label class="form-check-label" for="payment_later">
                                     <i class="fas fa-clock me-2 text-muted"></i> Pay Later (After Approval)
-                                    <br><small class="text-muted">Complete payment after your booking is approved by our team</small>
+                                    <br><small class="text-white">Complete payment after your booking is approved by our team</small>
                                 </label>
-                            </div>
+                            </div> --}}
+
+                            <input type="hidden" name="crypto_wallet_id" id="crypto_wallet_id" value="{{ old('crypto_wallet_id') }}">
                         </div>
                         
                         <!-- Payment Summary -->
@@ -210,6 +264,7 @@
                                 </div>
                             </div>
                         </div>
+
                         @endif
 
                         <!-- Terms and Conditions -->
@@ -381,6 +436,18 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('booking-form').addEventListener('submit', function(e) {
         const submitBtn = document.getElementById('submit-btn');
         const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
+        
+        // Validate that a crypto wallet is chosen for crypto payments
+        if (selectedPaymentMethod && selectedPaymentMethod.dataset.cryptoMethod === '1') {
+            const walletId = selectedPaymentMethod.dataset.cryptoWalletId;
+            if (!walletId) {
+                e.preventDefault();
+                alert('No crypto wallet is available for cryptocurrency payment. Please select another payment method or pay later.');
+                document.querySelector('input[name="payment_method"]:checked').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            document.getElementById('crypto_wallet_id').value = walletId;
+        }
         
         if (selectedPaymentMethod && selectedPaymentMethod.value) {
             // Show processing message for payment methods
